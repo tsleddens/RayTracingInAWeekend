@@ -11,11 +11,7 @@ set(SRC_FILES
     "HelloSphere.h"
 )
 
-if("${CMAKE_BUILD_TYPE}" STREQUAL Debug)
-    add_executable (${PROJECT_NAME} ${SRC_FILES} ${INC_FILES})
-else()
-    add_executable (${PROJECT_NAME} WIN32 ${SRC_FILES} ${INC_FILES})
-endif()
+add_executable (${PROJECT_NAME} ${SRC_FILES} ${INC_FILES})
 
 target_compile_features(${PROJECT_NAME}
     PRIVATE
@@ -24,8 +20,11 @@ target_compile_features(${PROJECT_NAME}
 
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
-        LINK_FLAGS
-            "/PROFILE"
+        LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE"
+        LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS"
+        LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:WINDOWS"
+        LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:WINDOWS"
+        LINK_FLAGS "/PROFILE"
 )
 
 target_link_libraries(${PROJECT_NAME}
