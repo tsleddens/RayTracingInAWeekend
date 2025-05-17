@@ -7,6 +7,7 @@ set(PRIVATE_INC_FOLDER ${PROJECT_SOURCE_DIR}/inc/tsleddens)
 set(INC_FILES 
     ${PRIVATE_INC_FOLDER}/IRayTraceable.h
     ${PRIVATE_INC_FOLDER}/IMaterial.h
+    ${PRIVATE_INC_FOLDER}/Defines.h
     ${PRIVATE_INC_FOLDER}/Ray.h
     ${PRIVATE_INC_FOLDER}/Sphere.h
     ${PRIVATE_INC_FOLDER}/Win32Rasterizer.h
