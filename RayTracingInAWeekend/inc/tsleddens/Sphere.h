@@ -7,14 +7,19 @@ namespace tsleddens
     class Sphere: public IRayTraceable
     {
         Point3 m_location;
-        ColorCode m_color;
+        IMaterial* m_pMaterial;
         float m_radius;
+        float m_radiusSquared;
 
     public:
-        Sphere(const Point3& location, float radius, const Color& color);
+        Sphere(const Point3& location, float radius, IMaterial* pMaterial);
 
         [[nodiscard]] const Point3& GetLocation() const { return m_location; }
+
+        [[nodiscard]] IMaterial* GetMaterial() const override { return m_pMaterial; }
+
         [[nodiscard]] float GetRadius() const { return m_radius; }
-        [[nodiscard]] ColorCode Intersect(const Ray& ray) const override;
+
+        [[nodiscard]] bool Intersect(const Ray& ray, HitResult& hitResult) const override;
     };
 }

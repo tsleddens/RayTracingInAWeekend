@@ -1,4 +1,7 @@
 #include "HelloSphere.h"
+
+#include "tsleddens/HitResult.h"
+#include "tsleddens/Material.h"
 #include "tsleddens/Ray.h"
 #include "tsleddens/Sphere.h"
 
@@ -23,7 +26,9 @@ void HelloSphere::OnBeforeRender()
     constexpr auto vertical = Vector3(0, viewportHeight, 0);
     const auto horizontal = Vector3(viewportWidth, 0, 0);
     const auto lowerLeftCorner = origin - horizontal / 2.0f - vertical / 2.0f - Vector3(0, 0, focalLength);
-    const Sphere sphere(Point3(0, 0, -1.0f), 0.5f, Color(1, 0, 0));
+    const std::unique_ptr<Material> redAlbedo = std::make_unique<Material>(Color(1, 0, 0));
+
+    const Sphere sphere(Point3(0, 0, -1.0f), 0.5f, redAlbedo.get());
 
     for (int y = 0; y < height; ++y)
     {
@@ -35,11 +40,10 @@ void HelloSphere::OnBeforeRender()
 
             const Vector3 unitDirection = r.NormalizedDirection();
             const float t = 0.5f * (unitDirection.y + 1.0f);
-
-            ColorCode hitColor = sphere.Intersect(r);
-            if(hitColor > 0)
+            HitResult hitResult;
+            if (sphere.Intersect(r, hitResult))
             {
-                PlotPixel(x, y, hitColor);
+                PlotPixel(x, y, hitResult.GetMaterial()->GetColor());
             }
             else
             {
