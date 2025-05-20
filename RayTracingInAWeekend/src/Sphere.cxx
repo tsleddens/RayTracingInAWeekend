@@ -15,15 +15,20 @@ Sphere::Sphere(const Point3& location, float radius, IMaterial* pMaterial) :
 
 bool Sphere::Intersect(const Ray& ray, HitResult& hitResult) const
 {
-    const Point3 oc = m_location - ray.Origin;
-    const float a = length2(ray.Direction);
-    const float half_b = dot(oc, ray.Direction);
-    const float c = length2(oc) - m_radiusSquared;
-    const float discriminant = half_b * half_b - a * c;
+    const Point3 c = m_location - ray.GetOrigin();
+    float t = glm::dot(c, ray.GetDirection());
+    const Vector3 q = c - t * ray.GetDirection();
+    float p2 = glm::dot(q, q);
 
-    if(discriminant >= 0)
+    if (p2 <= m_radiusSquared)
     {
-        hitResult.Initialize(*this);
+        t -= std::sqrt(m_radiusSquared - p2);
+
+        const Point3 intersectionPoint = ray.GetOrigin() + ray.GetDirection() * t;
+        hitResult.SetIntersection(intersectionPoint);
+        const Vector3 outwardNormal = glm::normalize(intersectionPoint - m_location);
+        hitResult.SetFaceNormal(ray, outwardNormal);
+        hitResult.SetMaterial(this->GetMaterial());
         return true;
     }
 

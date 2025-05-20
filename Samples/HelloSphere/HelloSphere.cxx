@@ -14,40 +14,51 @@ void HelloSphere::OnUpdate()
 
 void HelloSphere::OnBeforeRender()
 {
-    const UINT width = GetWidth();
-    const UINT height = GetHeight();
-    const UINT pixelCount = GetPixelCount();
+    const UINT imageWidth = GetWidth();
+    const UINT imageHeight = GetHeight();
+    const float aspectRatio = GetAspectRatio();
 
-    constexpr float focalLength = 1.0f;
-    constexpr float viewportHeight = 2.0f;
-    const float viewportWidth = GetAspectRatio() * viewportHeight;
+    constexpr float fieldOfView = 1.0f;
 
-    constexpr auto origin = Point3(0, 0, 0);
-    constexpr auto vertical = Vector3(0, viewportHeight, 0);
-    const auto horizontal = Vector3(viewportWidth, 0, 0);
-    const auto lowerLeftCorner = origin - horizontal / 2.0f - vertical / 2.0f - Vector3(0, 0, focalLength);
-    const std::unique_ptr<Material> redAlbedo = std::make_unique<Material>(Color(1, 0, 0));
+    constexpr Point3 cameraPositionE = Point3(0.f);
+    constexpr Vector3 viewDirectionV = Vector3(0.f, 0.f, -1.f);
+    constexpr Point3 screenCenterC = cameraPositionE + (fieldOfView * viewDirectionV);
 
-    const Sphere sphere(Point3(0, 0, -1.0f), 0.5f, redAlbedo.get());
+    const Point3 p0 = screenCenterC + Point3(-aspectRatio, -1.f, 0.f);
+    const Point3 p1 = screenCenterC + Point3(aspectRatio, -1.f, 0.f);
+    const Point3 p2 = screenCenterC + Point3(-aspectRatio, 1.f, 0.f);
 
-    for (int y = 0; y < height; ++y)
+    const float uDelta = 1.0f / (static_cast<float>(imageWidth));
+    const float vDelta = 1.0f / static_cast<float>(imageHeight);
+
+    const std::unique_ptr<Material> redAlbedo = std::make_unique<Material>(Color(1.f, 0.f, 0.f));
+
+    const Sphere sphere(Point3(0.f, 0.f, -1.f), 0.5f, redAlbedo.get());
+
+    for (UINT y = 0; y < imageHeight; ++y)
     {
-        for (int x = 0; x < width; ++x)
+        for (UINT x = 0; x < imageWidth; ++x)
         {
-            const float u = static_cast<float>(x) / (static_cast<float>(width) - 1.0f);
-            const float v = static_cast<float>(y) / (static_cast<float>(height) - 1.0f);
-            const Ray r(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
+            const float u = static_cast<float>(x) * uDelta;
+            const float v = static_cast<float>(y) * vDelta;
 
-            const Vector3 unitDirection = r.NormalizedDirection();
-            const float t = 0.5f * (unitDirection.y + 1.0f);
+            const Point3 pixelCenter = p0 + (u * (p1 - p0)) + (v * (p2 - p0));
+            const Vector3 direction = pixelCenter - cameraPositionE;
+
+            const Ray ray = Ray(cameraPositionE, direction);
             HitResult hitResult;
-            if (sphere.Intersect(r, hitResult))
+            if (sphere.Intersect(ray, hitResult))
             {
-                PlotPixel(x, y, hitResult.GetMaterial()->GetColor());
+                // PlotPixel(x, y, hitResult.GetMaterial()->GetColor());
+                auto normal = hitResult.GetNormal();
+                auto normalColor = (normal + 1.f) * 0.5f;
+                PlotPixel(x, y, ColorToColorCode(normalColor));
             }
             else
             {
-                const Color color = (1.0f - t) * Color(1.0f, 1.0f, 1.0f) + t * Color(0.5f, 0.7f, 1.0f);
+                const Vector3 unitDirection = ray.GetDirection();
+                const float a = 0.5f * (unitDirection.y + 1.0f);
+                const Color color = (1.0f - a) * Color(1.0f) + a * Color(0.5f, 0.7f, 1.0f);
                 PlotPixel(x, y, color);
             }
         }

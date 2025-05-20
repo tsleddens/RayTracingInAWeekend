@@ -17,7 +17,6 @@ set(INC_FILES
 
 set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)
 set(SRC_FILES 
-    ${SRC_FOLDER}/HitResult.cxx
     ${SRC_FOLDER}/Material.cxx
     ${SRC_FOLDER}/Sphere.cxx
     ${SRC_FOLDER}/Win32Rasterizer.cxx
