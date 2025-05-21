@@ -16,7 +16,7 @@ Sphere::Sphere(const Point3& location, float radius, IMaterial* pMaterial) :
 bool Sphere::Intersect(const Ray& ray, HitResult& hitResult) const
 {
     const Point3 c = m_location - ray.GetOrigin();
-    float t = glm::dot(c, ray.GetDirection());
+    float t = glm::abs(glm::dot(c, ray.GetDirection()));
     const Vector3 q = c - t * ray.GetDirection();
     float p2 = glm::dot(q, q);
 
