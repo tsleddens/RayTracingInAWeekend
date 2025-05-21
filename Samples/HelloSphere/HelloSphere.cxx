@@ -4,6 +4,7 @@
 #include "tsleddens/Material.h"
 #include "tsleddens/Ray.h"
 #include "tsleddens/Sphere.h"
+#include "tsleddens/World.h"
 
 using namespace tsleddens;
 
@@ -33,7 +34,10 @@ void HelloSphere::OnBeforeRender()
 
     const std::unique_ptr<Material> redAlbedo = std::make_unique<Material>(Color(1.f, 0.f, 0.f));
 
-    const Sphere sphere(Point3(0.f, 0.f, -1.f), 0.5f, redAlbedo.get());
+    World world;
+
+    world.AddObject<Sphere>(Point3(0.f, 0, -1.f), 0.5f, redAlbedo.get());
+    world.AddObject<Sphere>(Point3(0.f, -100.5f, -1.f), 100.f, redAlbedo.get());
 
     for (UINT y = 0; y < imageHeight; ++y)
     {
@@ -47,7 +51,7 @@ void HelloSphere::OnBeforeRender()
 
             const Ray ray = Ray(cameraPositionE, direction);
             HitResult hitResult;
-            if (sphere.Intersect(ray, hitResult))
+            if (world.Intersect(ray, hitResult, 0.f , FLT_MAX))
             {
                 // PlotPixel(x, y, hitResult.GetMaterial()->GetColor());
                 auto normal = hitResult.GetNormal();

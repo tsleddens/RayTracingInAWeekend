@@ -10,7 +10,7 @@ namespace tsleddens
     {
         virtual ~IRayTraceable() = default;
 
-        [[nodiscard]] virtual bool Intersect(const Ray& ray, HitResult& hitResult) const = 0;
+        [[nodiscard]] virtual bool Intersect(const Ray& ray, HitResult& hitResult, float minDistance, float maxDistance) const = 0;
         [[nodiscard]] virtual IMaterial* GetMaterial() const = 0;
     };
 }

@@ -13,6 +13,7 @@ set(INC_FILES
     ${PRIVATE_INC_FOLDER}/Ray.h
     ${PRIVATE_INC_FOLDER}/Sphere.h
     ${PRIVATE_INC_FOLDER}/Win32Rasterizer.h
+    ${PRIVATE_INC_FOLDER}/World.h
 )
 
 set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)
@@ -20,6 +21,7 @@ set(SRC_FILES
     ${SRC_FOLDER}/Material.cxx
     ${SRC_FOLDER}/Sphere.cxx
     ${SRC_FOLDER}/Win32Rasterizer.cxx
+    ${SRC_FOLDER}/World.cxx
 )
 
 add_library(${PROJECT_NAME} STATIC
