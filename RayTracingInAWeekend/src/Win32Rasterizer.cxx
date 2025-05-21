@@ -51,6 +51,7 @@ void Win32Rasterizer::Resize(UINT width, UINT height)
         m_height = height;
         m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
         m_hBackBuffer = CreateBackBuffer(width, height, true);
+        OnResize(width, height);
     }
 }
 

@@ -28,12 +28,14 @@ namespace tsleddens
 
         int Run(int cmdShow);
 
-    protected:
-        Win32Rasterizer(UINT width, UINT height, const wchar_t* title);
         void PlotPixel(UINT x, UINT y, ColorCode pixel) const;
         void PlotPixel(UINT x, UINT y, const Color& color) const;
 
+    protected:
+        Win32Rasterizer(UINT width, UINT height, const wchar_t* title);
+
         virtual void OnInit() = 0;
+        virtual void OnResize(UINT newWidth, UINT newHeight) = 0;
         virtual void OnUpdate() = 0;
         virtual void OnBeforeRender() = 0;
         virtual void OnAfterRender() = 0;

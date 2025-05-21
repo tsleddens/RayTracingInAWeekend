@@ -11,6 +11,7 @@ using Color = glm::vec3;
 using Pixel = glm::vec2;
 using ColorCode = unsigned int;
 
+
 inline ColorCode ColorToColorCode(const Color& color)
 {
     const auto r = static_cast<unsigned int>(color.x * 255.999f) & 0xff;

@@ -19,6 +19,7 @@ namespace tsleddens
         [[nodiscard]] const Vector3& GetNormal() const { return m_normal; }
         [[nodiscard]] float GetDistance() const { return m_distance; }
         [[nodiscard]] bool IsFrontFace() const { return m_frontFace; }
+        [[nodiscard]] IMaterial* GetMaterial() const { return m_pMaterial; }
 
         void SetIntersection(const Point3& intersection) { m_intersection = Point3(intersection); }
         void SetMaterial(IMaterial* material) { m_pMaterial = material; }

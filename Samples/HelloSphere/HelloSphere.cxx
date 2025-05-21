@@ -2,11 +2,26 @@
 
 #include "tsleddens/HitResult.h"
 #include "tsleddens/Material.h"
-#include "tsleddens/Ray.h"
 #include "tsleddens/Sphere.h"
 #include "tsleddens/World.h"
 
 using namespace tsleddens;
+
+HelloSphere::HelloSphere(int width, int height, const wchar_t* title):
+    Win32Rasterizer(width, height, title),
+    m_camera(Camera(width, height)),
+    m_world(World()),
+    m_material(Material(Color(1.f, 0.f, 0.f)))
+{
+    m_camera.EnableRenderNormals();
+    m_world.AddObject<Sphere>(Point3(0.f, 0, -1.f), 0.5f, &m_material);
+    m_world.AddObject<Sphere>(Point3(0.f, -100.5f, -1.f), 100.f, &m_material);
+}
+
+void HelloSphere::OnResize(UINT newWidth, UINT newHeight)
+{
+    m_camera.Resize(newWidth, newHeight);
+}
 
 void HelloSphere::OnUpdate()
 {
@@ -15,58 +30,7 @@ void HelloSphere::OnUpdate()
 
 void HelloSphere::OnBeforeRender()
 {
-    const UINT imageWidth = GetWidth();
-    const UINT imageHeight = GetHeight();
-    const float aspectRatio = GetAspectRatio();
-
-    constexpr float fieldOfView = 1.0f;
-
-    constexpr Point3 cameraPositionE = Point3(0.f);
-    constexpr Vector3 viewDirectionV = Vector3(0.f, 0.f, -1.f);
-    constexpr Point3 screenCenterC = cameraPositionE + (fieldOfView * viewDirectionV);
-
-    const Point3 p0 = screenCenterC + Point3(-aspectRatio, -1.f, 0.f);
-    const Point3 p1 = screenCenterC + Point3(aspectRatio, -1.f, 0.f);
-    const Point3 p2 = screenCenterC + Point3(-aspectRatio, 1.f, 0.f);
-
-    const float uDelta = 1.0f / (static_cast<float>(imageWidth));
-    const float vDelta = 1.0f / static_cast<float>(imageHeight);
-
-    const std::unique_ptr<Material> redAlbedo = std::make_unique<Material>(Color(1.f, 0.f, 0.f));
-
-    World world;
-
-    world.AddObject<Sphere>(Point3(0.f, 0, -1.f), 0.5f, redAlbedo.get());
-    world.AddObject<Sphere>(Point3(0.f, -100.5f, -1.f), 100.f, redAlbedo.get());
-
-    for (UINT y = 0; y < imageHeight; ++y)
-    {
-        for (UINT x = 0; x < imageWidth; ++x)
-        {
-            const float u = static_cast<float>(x) * uDelta;
-            const float v = static_cast<float>(y) * vDelta;
-
-            const Point3 pixelCenter = p0 + (u * (p1 - p0)) + (v * (p2 - p0));
-            const Vector3 direction = pixelCenter - cameraPositionE;
-
-            const Ray ray = Ray(cameraPositionE, direction);
-            HitResult hitResult;
-            if (world.Intersect(ray, hitResult, 0.f , FLT_MAX))
-            {
-                // PlotPixel(x, y, hitResult.GetMaterial()->GetColor());
-                auto normal = hitResult.GetNormal();
-                auto normalColor = (normal + 1.f) * 0.5f;
-                PlotPixel(x, y, ColorToColorCode(normalColor));
-            }
-            else
-            {
-                const Vector3 unitDirection = ray.GetDirection();
-                const float a = 0.5f * (unitDirection.y + 1.0f);
-                const Color color = (1.0f - a) * Color(1.0f) + a * Color(0.5f, 0.7f, 1.0f);
-                PlotPixel(x, y, color);
-            }
-        }
-    }
+    m_camera.TraceAndPlot(m_world, *this);
 }
 
 void HelloSphere::UpdateFps() const
