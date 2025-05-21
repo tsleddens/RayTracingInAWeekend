@@ -21,6 +21,6 @@ namespace tsleddens
 
         [[nodiscard]] Point3 At(float distance) const { return m_origin + (distance * m_direction); }
         [[nodiscard]] const Vector3& GetDirection() const { return m_direction; }
-        [[nodiscard]] const Point3& GetOrigin() const { return m_direction; }
+        [[nodiscard]] const Point3& GetOrigin() const { return m_origin; }
     };
 }
