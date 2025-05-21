@@ -19,13 +19,13 @@ void Camera::Resize(UINT imageWidth, UINT imageHeight)
     m_imageHeight = imageHeight;
     m_aspectRatio = static_cast<float>(imageWidth) / static_cast<float>(imageHeight);
 
-    Point3 screenCenter = m_position + (m_fieldOfView * m_viewDirection);
+    const Point3 screenCenter = m_position + (m_fieldOfView * m_viewDirection);
     m_p0 = screenCenter + Point3(-m_aspectRatio, -1.f, 0.f);
-    m_p1 = screenCenter + Point3(m_aspectRatio, -1.f, 0.f);
-    m_p2 = screenCenter + Point3(-m_aspectRatio, 1.f, 0.f);
+    const Point3 p1 = screenCenter + Point3(m_aspectRatio, -1.f, 0.f);
+    const Point3 p2 = screenCenter + Point3(-m_aspectRatio, 1.f, 0.f);
 
-    m_uDelta = 1.f / static_cast<float>(imageWidth);
-    m_vDelta = 1.f / static_cast<float>(imageHeight);
+    m_uDelta = 1.f / static_cast<float>(imageWidth) * (p1 - m_p0);
+    m_vDelta = 1.f / static_cast<float>(imageHeight) * (p2 - m_p0);
 }
 
 void Camera::TraceAndPlot(const IRayTraceable& world, const Win32Rasterizer& rasterizer) const
@@ -34,10 +34,7 @@ void Camera::TraceAndPlot(const IRayTraceable& world, const Win32Rasterizer& ras
     {
         for (UINT x = 0; x < m_imageWidth; ++x)
         {
-            const float u = static_cast<float>(x) * m_uDelta;
-            const float v = static_cast<float>(y) * m_vDelta;
-
-            const Point3 pixelCenter = m_p0 + (u * (m_p1 - m_p0)) + (v * (m_p2 - m_p0));
+            const Point3 pixelCenter = m_p0 + (static_cast<float>(x) * m_uDelta) + (static_cast<float>(y) * m_vDelta);
             const Vector3 direction = pixelCenter - m_position;
 
             const Ray ray = Ray(m_position, direction);
