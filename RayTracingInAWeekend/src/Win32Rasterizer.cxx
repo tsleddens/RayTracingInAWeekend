@@ -9,8 +9,6 @@ Win32Rasterizer::Win32Rasterizer(UINT width, UINT height, const wchar_t* title) 
     m_hwnd(CreateWindowHandle(title)),
     m_hdc(GetDC(GetWindowHandle())),
     m_hdcMem(CreateCompatibleDC(m_hdc)),
-    m_ppBackBufferRows(),
-    m_pBackBufferPixels(),
     m_hBackBuffer(CreateBackBuffer(width, height, false))
 {
 }
@@ -33,14 +31,10 @@ int Win32Rasterizer::Run(int cmdShow)
     return exitCode;
 }
 
-void Win32Rasterizer::PlotPixel(UINT x, UINT y, ColorCode pixel) const
+void Win32Rasterizer::PlotPixel(UINT x, UINT y, const Color& color, float reciprocalFrameCount) const
 {
-    m_ppBackBufferRows[y][x] = pixel;
-}
-
-void Win32Rasterizer::PlotPixel(UINT x, UINT y, const Color& color) const
-{
-    m_ppBackBufferRows[y][x] = ColorToColorCode(color);
+    m_pColors[y][x] += (color - m_pColors[y][x]) * reciprocalFrameCount;
+    m_ppBackBufferRows[y][x] = ColorToColorCode(m_pColors[y][x]);
 }
 
 void Win32Rasterizer::Resize(UINT width, UINT height)
@@ -62,7 +56,7 @@ RECT Win32Rasterizer::GetClientSurface() const
     return clientSurface;
 }
 
-void Win32Rasterizer::DestroyBackBuffer()
+void Win32Rasterizer::DestroyBackBuffer() const
 {
     _aligned_free(static_cast<void*>(m_ppBackBufferRows));
     DeleteObject(m_hBackBuffer);
@@ -94,17 +88,32 @@ HBITMAP Win32Rasterizer::CreateBackBuffer(UINT width, UINT height, bool reAlloc)
 
     UINT alignment = sizeof(UINT*);
     UINT size = height * alignment;
-    m_ppBackBufferRows = static_cast<unsigned int**>(reAlloc
+    m_ppBackBufferRows = static_cast<UINT**>(reAlloc
         ? _aligned_realloc(static_cast<void*>(m_ppBackBufferRows), size, alignment)
         : _aligned_malloc(size, alignment)
     );
+
+    if (reAlloc)
+    {
+        m_colors.resize(width * height, Color(0.f));
+        std::ranges::fill(m_colors, Color(0.f));
+
+        m_pColors.resize(height, nullptr);
+        std::ranges::fill(m_pColors, nullptr);
+    }
+    else
+    {
+        m_colors = std::vector<Color>(width * height, Color(0.f));
+        m_pColors = std::vector<Color*>(height);
+    }
 
     if (m_ppBackBufferRows != nullptr)
     {
         for(UINT y = 0; y < height; ++y)
         {
-            const UINT rowBeginIndex = y * m_width;
+            const UINT rowBeginIndex = y * width;
             m_ppBackBufferRows[y] = &m_pBackBufferPixels[rowBeginIndex];
+            m_pColors[y] = &m_colors[rowBeginIndex];
         }
     }
 

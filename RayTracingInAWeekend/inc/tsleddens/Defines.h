@@ -1,5 +1,9 @@
 #pragma once
 
+#define GLM_FORCE_INLINE
+#define GLM_FORCE_SIMD_AVX2
+#define GLM_FORCE_ALIGNED
+
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/vec3.hpp>
@@ -20,11 +24,12 @@ inline ColorCode ColorToColorCode(const Color& color)
     return (r << 16) + (g << 8) + b;
 }
 
-inline Color ColorCodeToColor(ColorCode colorCode)
+inline float RandomFloat()
 {
-    constexpr float reciprocal = 1.0f / 255.0f;
-    const float r = ((colorCode & 0xFF0000) >> 16) * reciprocal;
-    const float g = ((colorCode & 0x00FF00) >> 8) * reciprocal;
-    const float b = (colorCode & 0x0000FF) * reciprocal;
-    return Color(r, g, b);
+    return std::rand() / (static_cast<float>(RAND_MAX) + 1.f);
+}
+
+inline float RandomFloat(float min, float max)
+{
+    return min + (max - min) * RandomFloat();
 }

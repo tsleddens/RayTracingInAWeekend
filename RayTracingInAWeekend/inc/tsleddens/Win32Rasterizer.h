@@ -10,6 +10,7 @@ namespace tsleddens
     {
         UINT m_width;
         UINT m_height;
+
         float m_aspectRatio;
 
         HWND m_hwnd;
@@ -17,19 +18,20 @@ namespace tsleddens
         HDC m_hdc;
         HDC m_hdcMem;
 
-    public:
-        unsigned int** m_ppBackBufferRows;
-        unsigned int* m_pBackBufferPixels;
+        std::vector<Color> m_colors;
+        std::vector<Color*> m_pColors;
+        unsigned int** m_ppBackBufferRows {};
+        unsigned int* m_pBackBufferPixels {};
 
         HBITMAP m_hBackBuffer;
+    public:
 
 
         virtual ~Win32Rasterizer();
 
         int Run(int cmdShow);
 
-        void PlotPixel(UINT x, UINT y, ColorCode pixel) const;
-        void PlotPixel(UINT x, UINT y, const Color& color) const;
+        void PlotPixel(UINT x, UINT y, const Color& color, float reciprocalFrameCount) const;
 
     protected:
         Win32Rasterizer(UINT width, UINT height, const wchar_t* title);
@@ -49,13 +51,13 @@ namespace tsleddens
         [[nodiscard]] UINT GetPixelCount() const { return m_height * m_width; }
         [[nodiscard]] float GetAspectRatio() const { return m_aspectRatio; }
         [[nodiscard]] ColorCode GetColorCode(int x, int y) const { return m_ppBackBufferRows[y][x]; }
-        [[nodiscard]] Color GetColor(int x, int y) const { return ColorCodeToColor(m_ppBackBufferRows[y][x]); }
+        [[nodiscard]] Color GetColor(int x, int y) const { return m_pColors[y][x]; }
 
     private:
         void Render() const;
 
         HBITMAP CreateBackBuffer(UINT width, UINT height, bool reAlloc);
-        void DestroyBackBuffer();
+        void DestroyBackBuffer() const;
 
         static LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
         HWND CreateWindowHandle(const wchar_t* title);

@@ -15,6 +15,7 @@ namespace tsleddens
             m_color.z = color.z;
         }
 
-        [[nodiscard]] ColorCode GetColor() const override;
+        [[nodiscard]] ColorCode GetColorCode() const override { return ColorToColorCode(m_color); }
+        [[nodiscard]] Color GetColor() const override { return m_color; }
     };
 }
