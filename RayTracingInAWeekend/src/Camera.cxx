@@ -15,6 +15,7 @@ Camera::Camera(UINT imageWidth, UINT imageHeight)
 
 void Camera::Resize(UINT imageWidth, UINT imageHeight)
 {
+    m_frameCount = 1;
     m_imageWidth = imageWidth;
     m_imageHeight = imageHeight;
     m_aspectRatio = static_cast<float>(imageWidth) / static_cast<float>(imageHeight);
@@ -26,12 +27,11 @@ void Camera::Resize(UINT imageWidth, UINT imageHeight)
 
     m_uDelta = 1.f / static_cast<float>(imageWidth) * (p1 - m_p0);
     m_vDelta = 1.f / static_cast<float>(imageHeight) * (p2 - m_p0);
-    m_frameCount = 1;
 }
 
 void Camera::TraceAndPlot(const IRayTraceable& world, const Win32Rasterizer& rasterizer)
 {
-    float reciprocalFrameCount = 1.f / static_cast<float>(m_frameCount + 1);
+    float reciprocalFrameCount = 1.f / static_cast<float>(m_frameCount);
     for (UINT y = 0; y < m_imageHeight; ++y)
     {
         for (UINT x = 0; x < m_imageWidth; ++x)
