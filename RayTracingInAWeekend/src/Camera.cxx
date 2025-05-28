@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 #include "HitResult.h"
-#include "IMaterial.h"
+#include "Materials/IMaterial.h"
 #include "IRayTraceable.h"
 #include "Ray.h"
 #include "Win32Rasterizer.h"
@@ -70,11 +70,15 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT curre
             return GetNormalColor(hitResult.GetNormal());
         }
 
-        // Vector3 randomDirection = RandomBounce(hitResult.GetNormal());
-        Vector3 randomDirection = hitResult.GetNormal() + RandomUnitVector3();
-        return 0.5f * SampleColor(Ray(hitResult.GetIntersection(), randomDirection), world, ++currentBounces);
+        Ray scattered;
+        Color attenuation;
 
-        // return hitResult.GetMaterial()->GetColor();
+        if (hitResult.GetMaterial()->Scatter(ray, hitResult, attenuation, scattered))
+        {
+            return attenuation * SampleColor(scattered, world, ++currentBounces);
+        }
+
+        return Color(0.f); // If scattering fails, return black
     }
 
     return GetNoHitColor(ray);

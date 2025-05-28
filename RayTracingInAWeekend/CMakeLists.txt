@@ -4,26 +4,32 @@ project(RayTracingInAWeekend VERSION 1.0.0.0 LANGUAGES CXX)
 
 set(INTERFACE_INC_FOLDER ${PROJECT_SOURCE_DIR}/inc)
 set(PRIVATE_INC_FOLDER ${PROJECT_SOURCE_DIR}/inc/tsleddens)
+set(PRIVATE_MATERIALS_INC_FOLDER ${PRIVATE_INC_FOLDER}/Materials)
 set(INC_FILES 
     ${PRIVATE_INC_FOLDER}/IRayTraceable.h
-    ${PRIVATE_INC_FOLDER}/IMaterial.h
     ${PRIVATE_INC_FOLDER}/Camera.h
     ${PRIVATE_INC_FOLDER}/Defines.h
     ${PRIVATE_INC_FOLDER}/HitResult.h
-    ${PRIVATE_INC_FOLDER}/Material.h
     ${PRIVATE_INC_FOLDER}/Ray.h
     ${PRIVATE_INC_FOLDER}/Sphere.h
     ${PRIVATE_INC_FOLDER}/Win32Rasterizer.h
     ${PRIVATE_INC_FOLDER}/World.h
+
+    ${PRIVATE_MATERIALS_INC_FOLDER}/IMaterial.h
+    ${PRIVATE_MATERIALS_INC_FOLDER}/Lambertian.h
 )
 
 set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)
+set(SRC_MATERIALS_FOLDER ${SRC_FOLDER}/Materials)
 set(SRC_FILES 
     ${SRC_FOLDER}/Camera.cxx
     ${SRC_FOLDER}/Sphere.cxx
     ${SRC_FOLDER}/Win32Rasterizer.cxx
     ${SRC_FOLDER}/World.cxx
+
+    ${SRC_MATERIALS_FOLDER}/Lambertian.cxx
 )
+
 
 add_library(${PROJECT_NAME} STATIC
     ${SRC_FILES}

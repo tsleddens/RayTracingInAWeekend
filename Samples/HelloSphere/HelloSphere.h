@@ -1,7 +1,6 @@
 #pragma once
 
 #include "tsleddens/Camera.h"
-#include "tsleddens/Material.h"
 #include "tsleddens/Win32Rasterizer.h"
 #include "tsleddens/World.h"
 
@@ -9,7 +8,8 @@ class HelloSphere final : public tsleddens::Win32Rasterizer
 {
     tsleddens::Camera m_camera;
     tsleddens::World m_world;
-    tsleddens::Material m_material;
+    std::unique_ptr<tsleddens::IMaterial> m_lambertian1;
+    std::unique_ptr<tsleddens::IMaterial> m_lambertian2;
 
 public:
     HelloSphere(int width, int height, const wchar_t* title);
