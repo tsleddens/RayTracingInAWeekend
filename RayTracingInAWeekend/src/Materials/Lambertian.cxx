@@ -4,7 +4,7 @@
 
 using namespace tsleddens;
 
-bool Lambertian::Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered) const
+bool Lambertian::Scatter(const Ray&, const HitResult& hitResult, Color& attenuation, Ray& scattered) const
 {
     Vector3 scatterDirection = hitResult.GetNormal() + RandomUnitVector3();
 

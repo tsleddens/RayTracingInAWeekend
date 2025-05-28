@@ -17,6 +17,7 @@ set(INC_FILES
 
     ${PRIVATE_MATERIALS_INC_FOLDER}/IMaterial.h
     ${PRIVATE_MATERIALS_INC_FOLDER}/Lambertian.h
+    ${PRIVATE_MATERIALS_INC_FOLDER}/Metal.h
 )
 
 set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)
@@ -28,6 +29,7 @@ set(SRC_FILES
     ${SRC_FOLDER}/World.cxx
 
     ${SRC_MATERIALS_FOLDER}/Lambertian.cxx
+    ${SRC_MATERIALS_FOLDER}/Metal.cxx
 )
 
 

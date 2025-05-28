@@ -8,8 +8,10 @@ class HelloSphere final : public tsleddens::Win32Rasterizer
 {
     tsleddens::Camera m_camera;
     tsleddens::World m_world;
-    std::unique_ptr<tsleddens::IMaterial> m_lambertian1;
-    std::unique_ptr<tsleddens::IMaterial> m_lambertian2;
+    std::unique_ptr<tsleddens::IMaterial> m_materialGround;
+    std::unique_ptr<tsleddens::IMaterial> m_materialCenter;
+    std::unique_ptr<tsleddens::IMaterial> m_materialLeft;
+    std::unique_ptr<tsleddens::IMaterial> m_materialRight;
 
 public:
     HelloSphere(int width, int height, const wchar_t* title);
