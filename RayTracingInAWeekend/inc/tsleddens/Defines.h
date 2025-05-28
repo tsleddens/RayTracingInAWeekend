@@ -15,12 +15,22 @@ using Color = glm::vec3;
 using Pixel = glm::vec2;
 using ColorCode = unsigned int;
 
+inline float LinearToGamma(float linear)
+{
+    constexpr float gamma = 1.f / 2.2f;
+    if (linear > 0.f)
+    {
+        return std::pow(linear, gamma); // Gamma correction
+    }
+
+    return 0.f;
+}
 
 inline ColorCode ColorToColorCode(const Color& color)
 {
-    const auto r = static_cast<unsigned int>(color.x * 255.999f) & 0xff;
-    const auto g = static_cast<unsigned int>(color.y * 255.999f) & 0xff;
-    const auto b = static_cast<unsigned int>(color.z * 255.999f) & 0xff;
+    const auto r = static_cast<unsigned int>(LinearToGamma(color.x) * 255.999f) & 0xff;
+    const auto g = static_cast<unsigned int>(LinearToGamma(color.y) * 255.999f) & 0xff;
+    const auto b = static_cast<unsigned int>(LinearToGamma(color.z) * 255.999f) & 0xff;
     return (r << 16) + (g << 8) + b;
 }
 
