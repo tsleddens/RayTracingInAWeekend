@@ -65,7 +65,10 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world) const
             return GetNormalColor(hitResult.GetNormal());
         }
 
-        return hitResult.GetMaterial()->GetColor();
+        Vector3 randomDirection = RandomBounce(hitResult.GetNormal());
+        return 0.5f * SampleColor(Ray(hitResult.GetIntersection(), randomDirection), world);
+
+        // return hitResult.GetMaterial()->GetColor();
     }
 
     return GetNoHitColor(ray);

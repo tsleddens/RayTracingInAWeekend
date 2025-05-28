@@ -13,7 +13,7 @@ HelloSphere::HelloSphere(int width, int height, const wchar_t* title):
     m_world(World()),
     m_material(Material(Color(1.f, 0.f, 0.f)))
 {
-    m_camera.EnableRenderNormals();
+    // m_camera.EnableRenderNormals();
     m_world.AddObject<Sphere>(Point3(0.f, 0, -1.f), 0.5f, &m_material);
     m_world.AddObject<Sphere>(Point3(0.f, -100.5f, -1.f), 100.f, &m_material);
 }

@@ -33,3 +33,35 @@ inline float RandomFloat(float min, float max)
 {
     return min + (max - min) * RandomFloat();
 }
+
+inline Vector3 RandomVector3(float min, float max)
+{
+    return Vector3(
+        RandomFloat(min, max),
+        RandomFloat(min, max),
+        RandomFloat(min, max)
+    );
+}
+
+inline Vector3 RandomUnitVector3()
+{
+    while (true)
+    {
+        Vector3 p = RandomVector3(-1.f, 1.f);
+        float lengthSquared = glm::length2(p);
+        if (lengthSquared >= 1.f || lengthSquared < 0.00001f)
+            continue; // Skip points that are outside the unit sphere or too close to the origin.
+
+        return glm::normalize(p);
+    }
+}
+
+inline Vector3 RandomBounce(const Vector3& normal)
+{
+    Vector3 randomDirection = RandomUnitVector3();
+    if (glm::dot(randomDirection, normal) < 0.f)
+    {
+        randomDirection = -randomDirection; // Ensure the random direction is in the hemisphere defined by the normal.
+    }
+    return randomDirection;
+}
