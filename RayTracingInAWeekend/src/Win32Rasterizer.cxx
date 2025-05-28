@@ -9,7 +9,7 @@ Win32Rasterizer::Win32Rasterizer(UINT width, UINT height, const wchar_t* title) 
     m_hwnd(CreateWindowHandle(title)),
     m_hdc(GetDC(GetWindowHandle())),
     m_hdcMem(CreateCompatibleDC(m_hdc)),
-    m_hBackBuffer(CreateBackBuffer(width, height, false))
+    m_hBackBuffer(CreateBackBuffer(width, height))
 {
 }
 
@@ -33,19 +33,20 @@ int Win32Rasterizer::Run(int cmdShow)
 
 void Win32Rasterizer::PlotPixel(UINT x, UINT y, const Color& color, float reciprocalFrameCount) const
 {
-    m_pColors[y][x] += (color - m_pColors[y][x]) * reciprocalFrameCount;
-    m_ppBackBufferRows[y][x] = ColorToColorCode(m_pColors[y][x]);
+    m_ppColors[y][x] += (color - m_ppColors[y][x]) * reciprocalFrameCount;
+    m_ppBackBufferRows[y][x] = ColorToColorCode(m_ppColors[y][x]);
 }
 
 void Win32Rasterizer::Resize(UINT width, UINT height)
 {
     if (width > 0 && height > 0 && (width != m_width || height != m_height))
     {
+        m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+        m_hBackBuffer = CreateBackBuffer(width, height);
+        OnResize(width, height);
+
         m_width = width;
         m_height = height;
-        m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
-        m_hBackBuffer = CreateBackBuffer(width, height, true);
-        OnResize(width, height);
     }
 }
 
@@ -58,8 +59,14 @@ RECT Win32Rasterizer::GetClientSurface() const
 
 void Win32Rasterizer::DestroyBackBuffer() const
 {
-    _aligned_free(static_cast<void*>(m_ppBackBufferRows));
+    for (UINT y = 0; y < m_height; ++y)
+    {
+        delete[] m_ppColors[y];
+    }
+
     DeleteObject(m_hBackBuffer);
+    _aligned_free(static_cast<void*>(m_ppBackBufferRows));
+    _aligned_free(static_cast<void*>(m_ppColors));
 }
 
 void Win32Rasterizer::Render() const
@@ -72,8 +79,21 @@ void Win32Rasterizer::Render() const
     BitBlt(m_hdc, 0, 0, bitmap.bmWidth, bitmap.bmHeight, m_hdcMem, 0, 0, SRCCOPY);
 }
 
-HBITMAP Win32Rasterizer::CreateBackBuffer(UINT width, UINT height, bool reAlloc)
+HBITMAP Win32Rasterizer::CreateBackBuffer(UINT width, UINT height)
 {
+    if (m_pBackBufferPixels != nullptr)
+    {
+        DestroyBackBuffer();
+    }
+
+    UINT alignment = sizeof(UINT*);
+    UINT size = height * alignment;
+    m_ppBackBufferRows = static_cast<UINT**>(_aligned_malloc(size, alignment));
+
+    UINT colorAlignment = sizeof(Color*);
+    UINT colorSize = height * colorAlignment;
+    m_ppColors = static_cast<Color**>(_aligned_malloc(colorSize, colorAlignment));
+
     BITMAPINFO bitmapInfo;
     bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     bitmapInfo.bmiHeader.biWidth = static_cast<long>(width);
@@ -85,35 +105,18 @@ HBITMAP Win32Rasterizer::CreateBackBuffer(UINT width, UINT height, bool reAlloc)
     HBITMAP hBitmap = CreateDIBSection(nullptr, &bitmapInfo, 0, reinterpret_cast<void**>(&m_pBackBufferPixels), nullptr, 0);
     assert(hBitmap != nullptr);
 
-
-    UINT alignment = sizeof(UINT*);
-    UINT size = height * alignment;
-    m_ppBackBufferRows = static_cast<UINT**>(reAlloc
-        ? _aligned_realloc(static_cast<void*>(m_ppBackBufferRows), size, alignment)
-        : _aligned_malloc(size, alignment)
-    );
-
-    if (reAlloc)
-    {
-        m_colors.resize(width * height, Color(0.f));
-        std::ranges::fill(m_colors, Color(0.f));
-
-        m_pColors.resize(height, nullptr);
-        std::ranges::fill(m_pColors, nullptr);
-    }
-    else
-    {
-        m_colors = std::vector<Color>(width * height, Color(0.f));
-        m_pColors = std::vector<Color*>(height);
-    }
-
     if (m_ppBackBufferRows != nullptr)
     {
         for(UINT y = 0; y < height; ++y)
         {
             const UINT rowBeginIndex = y * width;
             m_ppBackBufferRows[y] = &m_pBackBufferPixels[rowBeginIndex];
-            m_pColors[y] = &m_colors[rowBeginIndex];
+
+            m_ppColors[y] = new Color[width];
+            for (UINT x = 0; x < width; x++)
+            {
+                m_ppColors[y][x] = Color(0.f);
+            }
         }
     }
 

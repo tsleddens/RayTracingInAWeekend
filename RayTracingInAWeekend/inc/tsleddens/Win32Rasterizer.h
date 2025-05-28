@@ -18,8 +18,8 @@ namespace tsleddens
         HDC m_hdc;
         HDC m_hdcMem;
 
-        std::vector<Color> m_colors;
-        std::vector<Color*> m_pColors;
+        Color** m_ppColors{};
+
         unsigned int** m_ppBackBufferRows {};
         unsigned int* m_pBackBufferPixels {};
 
@@ -51,12 +51,12 @@ namespace tsleddens
         [[nodiscard]] UINT GetPixelCount() const { return m_height * m_width; }
         [[nodiscard]] float GetAspectRatio() const { return m_aspectRatio; }
         [[nodiscard]] ColorCode GetColorCode(int x, int y) const { return m_ppBackBufferRows[y][x]; }
-        [[nodiscard]] Color GetColor(int x, int y) const { return m_pColors[y][x]; }
+        [[nodiscard]] Color GetColor(int x, int y) const { return m_ppColors[y][x]; }
 
     private:
         void Render() const;
 
-        HBITMAP CreateBackBuffer(UINT width, UINT height, bool reAlloc);
+        HBITMAP CreateBackBuffer(UINT width, UINT height);
         void DestroyBackBuffer() const;
 
         static LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
