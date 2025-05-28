@@ -37,7 +37,7 @@ void Camera::TraceAndPlot(const IRayTraceable& world, const Win32Rasterizer& ras
         for (UINT x = 0; x < m_imageWidth; ++x)
         {
             Ray ray = GetRay(x, y);
-            Color color = SampleColor(ray, world);
+            Color color = SampleColor(ray, world, 0);
             rasterizer.PlotPixel(x, y, color, reciprocalFrameCount);
         }
     }
@@ -55,8 +55,13 @@ Ray Camera::GetRay(const UINT x, const UINT y) const
     return Ray(m_position, direction);
 }
 
-Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world) const
+Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT currentBounces) const
 {
+    if (currentBounces == m_maxBounces)
+    {
+        return Color(0.f); // Return black if max bounces reached
+    }
+
     HitResult hitResult;
     if (world.Intersect(ray, hitResult, 0.f, FLT_MAX))
     {
@@ -65,8 +70,9 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world) const
             return GetNormalColor(hitResult.GetNormal());
         }
 
-        Vector3 randomDirection = RandomBounce(hitResult.GetNormal());
-        return 0.5f * SampleColor(Ray(hitResult.GetIntersection(), randomDirection), world);
+        // Vector3 randomDirection = RandomBounce(hitResult.GetNormal());
+        Vector3 randomDirection = hitResult.GetNormal() + RandomUnitVector3();
+        return 0.5f * SampleColor(Ray(hitResult.GetIntersection(), randomDirection), world, ++currentBounces);
 
         // return hitResult.GetMaterial()->GetColor();
     }
