@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../HitResult.h"
 #include "IMaterial.h"
 
 namespace tsleddens
@@ -17,3 +18,13 @@ namespace tsleddens
         [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered) const override;
     };
 }
+
+inline bool tsleddens::Lambertian::Scatter(const Ray&, const HitResult& hitResult, Color& attenuation, Ray& scattered) const
+{
+    Vector3 scatterDirection = hitResult.GetNormal() + RandomUnitVector3();
+
+    scattered = Ray(hitResult.GetIntersection(), scatterDirection);
+    attenuation = m_albedo;
+    return true;
+}
+

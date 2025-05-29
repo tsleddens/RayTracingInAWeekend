@@ -21,15 +21,11 @@ set(INC_FILES
 )
 
 set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)
-set(SRC_MATERIALS_FOLDER ${SRC_FOLDER}/Materials)
 set(SRC_FILES 
     ${SRC_FOLDER}/Camera.cxx
     ${SRC_FOLDER}/Sphere.cxx
     ${SRC_FOLDER}/Win32Rasterizer.cxx
     ${SRC_FOLDER}/World.cxx
-
-    ${SRC_MATERIALS_FOLDER}/Lambertian.cxx
-    ${SRC_MATERIALS_FOLDER}/Metal.cxx
 )
 
 

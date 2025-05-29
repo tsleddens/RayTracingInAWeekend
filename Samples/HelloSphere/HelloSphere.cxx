@@ -14,8 +14,8 @@ HelloSphere::HelloSphere(int width, int height, const wchar_t* title):
     m_world(World()),
     m_materialGround(std::make_unique<Lambertian>(Color(0.8f, 0.8f, 0.0f))),
     m_materialCenter(std::make_unique<Lambertian>(Color(0.1f, 0.2f, 0.5f))),
-    m_materialLeft(std::make_unique<Metal>(Color(0.8f, 0.8f, 0.8f))),
-    m_materialRight(std::make_unique<Metal>(Color(0.8f, 0.6f, 0.2f)))
+    m_materialLeft(std::make_unique<Metal>(Color(0.8f, 0.8f, 0.8f), 0.3f)),
+    m_materialRight(std::make_unique<Metal>(Color(0.8f, 0.6f, 0.2f), 1.0f))
 {
     // m_camera.EnableRenderNormals();
     m_world.AddObject<Sphere>(Point3(0.f, -100.5f, -1.f), 100.0f, m_materialGround.get());
