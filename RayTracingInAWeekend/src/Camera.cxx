@@ -59,11 +59,11 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT curre
 {
     if (currentBounces == m_maxBounces)
     {
-        return Color(0.f); // Return black if max bounces reached
+        return Color(0.f);
     }
 
     HitResult hitResult;
-    if (world.Intersect(ray, hitResult, 0.f, FLT_MAX))
+    if (world.Intersect(ray, hitResult, 0.001f, FLT_MAX))
     {
         if (m_isRenderNormalsEnabled)
         {
@@ -78,7 +78,7 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT curre
             return attenuation * SampleColor(scattered, world, ++currentBounces);
         }
 
-        return Color(0.f); // If scattering fails, return black
+        return Color(0.f);
     }
 
     return GetNoHitColor(ray);

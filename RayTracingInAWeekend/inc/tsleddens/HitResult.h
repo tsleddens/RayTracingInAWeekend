@@ -14,6 +14,7 @@ namespace tsleddens
         Point3 m_intersection = {};
         bool m_frontFace = false;
         float m_distance = FLT_MAX;
+
     public:
         [[nodiscard]] const Point3& GetIntersection() const { return m_intersection; }
         [[nodiscard]] const Vector3& GetNormal() const { return m_normal; }
@@ -21,15 +22,20 @@ namespace tsleddens
         [[nodiscard]] bool IsFrontFace() const { return m_frontFace; }
         [[nodiscard]] IMaterial* GetMaterial() const { return m_pMaterial; }
 
-        void SetIntersection(const Point3& intersection) { m_intersection = Point3(intersection); }
         void SetMaterial(IMaterial* material) { m_pMaterial = material; }
         void SetFaceNormal(const Ray& ray, const Vector3& outwardNormal);
-        void SetDistance(float distance) { m_distance = distance; }
+        void SetDistance(float distance, const Ray& ray);
     };
 
     inline void HitResult::SetFaceNormal(const Ray& ray, const Vector3& outwardNormal)
     {
-        m_frontFace = glm::dot(ray.GetDirection(), outwardNormal) < 0;
+        m_frontFace = glm::dot(ray.GetDirection(), outwardNormal) < 0.f;
         m_normal = m_frontFace ? outwardNormal : -outwardNormal;
+    }
+
+    inline void HitResult::SetDistance(float distance, const Ray& ray)
+    {
+        m_distance = distance;
+        m_intersection = ray.At(distance);
     }
 }

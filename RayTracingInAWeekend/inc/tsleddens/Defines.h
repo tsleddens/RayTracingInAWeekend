@@ -15,6 +15,8 @@ using Color = glm::vec3;
 using Pixel = glm::vec2;
 using ColorCode = unsigned int;
 
+constexpr float EPSILON = 1e-4f;
+
 inline float LinearToGamma(float linear)
 {
     constexpr float gamma = 1.f / 2.2f;
@@ -51,6 +53,11 @@ inline Vector3 RandomVector3(float min, float max)
         RandomFloat(min, max),
         RandomFloat(min, max)
     );
+}
+
+inline bool IsNearZero(const Vector3& v, float epsilon = EPSILON)
+{
+    return std::abs(v.x) < epsilon && std::abs(v.y) < epsilon && std::abs(v.z) < epsilon;
 }
 
 inline Vector3 RandomUnitVector3()

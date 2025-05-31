@@ -6,15 +6,15 @@ namespace tsleddens
 {
     class Sphere: public IRayTraceable
     {
-        Point3 m_location;
+        Point3 m_position;
         IMaterial* m_pMaterial;
         float m_radius;
-        float m_radiusSquared;
+        float m_radius2;
 
     public:
-        Sphere(const Point3& location, float radius, IMaterial* pMaterial);
+        Sphere(const Point3& position, float radius, IMaterial* pMaterial);
 
-        [[nodiscard]] const Point3& GetLocation() const { return m_location; }
+        [[nodiscard]] const Point3& GetPosition() const { return m_position; }
 
         [[nodiscard]] IMaterial* GetMaterial() const override { return m_pMaterial; }
 

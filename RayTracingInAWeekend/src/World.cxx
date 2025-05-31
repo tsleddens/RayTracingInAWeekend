@@ -1,7 +1,6 @@
 #include "World.h"
 
 #include "HitResult.h"
-#include "Ray.h"
 
 using namespace tsleddens;
 
@@ -19,8 +18,8 @@ bool World::Intersect(const Ray& ray, HitResult& hitResult, float minDistance, f
     {
         if (m_objects[i]->Intersect(ray, hitResult, minDistance, maxDistance))
         {
-            maxDistance = hitResult.GetDistance();
             isHit = true;
+            maxDistance = hitResult.GetDistance();
         }
     }
 

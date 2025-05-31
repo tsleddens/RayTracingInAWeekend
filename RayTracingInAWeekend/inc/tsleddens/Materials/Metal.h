@@ -26,9 +26,9 @@ namespace tsleddens
 
 inline bool tsleddens::Metal::Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered) const
 {
-    Vector3 reflected = glm::reflect(glm::normalize(ray.GetDirection()), hitResult.GetNormal());
-    reflected += glm::normalize(reflected) + (m_fuzz * RandomUnitVector3());
-    scattered = Ray(hitResult.GetIntersection(), reflected);
+    Vector3 reflected = glm::reflect(ray.GetDirection(), hitResult.GetNormal());
+    Vector3 scatterDirection = reflected + (m_fuzz * RandomUnitVector3());
+    scattered = Ray(hitResult.GetIntersection(), scatterDirection);
     attenuation = m_albedo;
     return (glm::dot(scattered.GetDirection(), hitResult.GetNormal()) > 0.f);
 }

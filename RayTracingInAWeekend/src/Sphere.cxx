@@ -5,37 +5,34 @@
 
 using namespace tsleddens;
 
-Sphere::Sphere(const Point3& location, float radius, IMaterial* pMaterial) :
-    m_location(location),
+Sphere::Sphere(const Point3& position, float radius, IMaterial* pMaterial) :
+    m_position(position),
     m_pMaterial(pMaterial),
     m_radius(radius),
-    m_radiusSquared(radius * radius)
+    m_radius2(radius * radius)
 {
 }
 
 bool Sphere::Intersect(const Ray& ray, HitResult& hitResult, float minDistance, float maxDistance) const
 {
-    const Point3 c = m_location - ray.GetOrigin();
-    float t = glm::dot(c, ray.GetDirection());
-    if (t >= 0.f)
+    Vector3 diff = m_position - ray.GetOrigin();
+    float tca = glm::dot(diff, ray.GetDirection());
+    float distance2 = glm::dot(diff, diff) - tca * tca;
+
+    if (distance2 <= m_radius2)
     {
-        const Vector3 q = c - t * ray.GetDirection();
-        float p2 = glm::dot(q, q);
+        float thc = std::sqrt(m_radius2 - distance2);
+        float t0 = tca - thc;
+        float t1 = tca + thc;
 
-        if (p2 <= m_radiusSquared)
+        float t = (t0 > 0.f) ? t0 : (t1 > 0.f) ? t1 : FLT_MIN;
+
+        if (t > FLT_MIN && t > minDistance && t < maxDistance)
         {
-            t -= std::sqrt(m_radiusSquared - p2);
-
-            if (t > minDistance && t < maxDistance)
-            {
-                const Point3 intersectionPoint = ray.GetOrigin() + ray.GetDirection() * t;
-                hitResult.SetIntersection(intersectionPoint);
-                const Vector3 outwardNormal = glm::normalize(intersectionPoint - m_location);
-                hitResult.SetFaceNormal(ray, outwardNormal);
-                hitResult.SetMaterial(this->GetMaterial());
-                hitResult.SetDistance(t);
-                return true;
-            }
+            hitResult.SetDistance(t, ray);
+            hitResult.SetFaceNormal(ray, glm::normalize(hitResult.GetIntersection() - m_position));
+            hitResult.SetMaterial(this->GetMaterial());
+            return true;
         }
     }
 

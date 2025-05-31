@@ -15,7 +15,7 @@ namespace tsleddens
         UINT m_imageHeight = 0;
         UINT m_samplesPerPixel = 1;
         UINT m_frameCount = 1;
-        UINT m_maxBounces = 50;
+        UINT m_maxBounces = 32;
 
         float m_aspectRatio = 0.f;
         float m_fieldOfView = 1.f;
