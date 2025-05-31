@@ -12,5 +12,6 @@ namespace tsleddens
 
         [[nodiscard]] virtual bool Intersect(const Ray& ray, HitResult& hitResult, float minDistance, float maxDistance) const = 0;
         [[nodiscard]] virtual IMaterial* GetMaterial() const = 0;
+        [[nodiscard]] virtual bool HasFlippedNormals() const = 0;
     };
 }

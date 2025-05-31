@@ -5,11 +5,12 @@
 
 using namespace tsleddens;
 
-Sphere::Sphere(const Point3& position, float radius, IMaterial* pMaterial) :
+Sphere::Sphere(const Point3& position, float radius, IMaterial* pMaterial, bool flippedNormals) :
     m_position(position),
     m_pMaterial(pMaterial),
     m_radius(radius),
-    m_radius2(radius * radius)
+    m_radius2(radius * radius),
+    m_flipNormals(flippedNormals)
 {
 }
 
@@ -30,7 +31,7 @@ bool Sphere::Intersect(const Ray& ray, HitResult& hitResult, float minDistance, 
         if (t > FLT_MIN && t > minDistance && t < maxDistance)
         {
             hitResult.SetDistance(t, ray);
-            hitResult.SetFaceNormal(ray, glm::normalize(hitResult.GetIntersection() - m_position));
+            hitResult.SetFaceNormal(ray, glm::normalize(hitResult.GetIntersection() - m_position), m_flipNormals);
             hitResult.SetMaterial(this->GetMaterial());
             return true;
         }

@@ -47,7 +47,7 @@ namespace tsleddens
 
         if (!std::isfinite(direction.x) || glm::length(direction) < EPSILON) return false;
 
-        scattered = Ray(hitResult.GetIntersection() + hitResult.GetNormal() * EPSILON, direction);
+        scattered = Ray(hitResult.GetIntersection() + direction * EPSILON, direction);
 
 
         return true;

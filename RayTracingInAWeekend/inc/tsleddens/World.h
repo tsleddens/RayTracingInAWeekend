@@ -21,6 +21,7 @@ namespace tsleddens
         [[nodiscard]] bool Intersect(const Ray& ray, HitResult& hitResult, float minDistance, float maxDistance) const override;
 
         [[nodiscard]] IMaterial* GetMaterial() const override;
+        [[nodiscard]] bool HasFlippedNormals() const override { return false; }
     };
 }
 

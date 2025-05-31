@@ -23,13 +23,14 @@ namespace tsleddens
         [[nodiscard]] IMaterial* GetMaterial() const { return m_pMaterial; }
 
         void SetMaterial(IMaterial* material) { m_pMaterial = material; }
-        void SetFaceNormal(const Ray& ray, const Vector3& outwardNormal);
+        void SetFaceNormal(const Ray& ray, const Vector3& outwardNormal, bool flipped);
         void SetDistance(float distance, const Ray& ray);
     };
 
-    inline void HitResult::SetFaceNormal(const Ray& ray, const Vector3& outwardNormal)
+    inline void HitResult::SetFaceNormal(const Ray& ray, const Vector3& outwardNormal, bool flipped)
     {
         m_frontFace = glm::dot(ray.GetDirection(), outwardNormal) < 0.f;
+        m_frontFace = flipped ? !m_frontFace : m_frontFace;
         m_normal = m_frontFace ? outwardNormal : -outwardNormal;
     }
 

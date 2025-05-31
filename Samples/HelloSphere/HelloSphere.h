@@ -11,6 +11,7 @@ class HelloSphere final : public tsleddens::Win32Rasterizer
     std::unique_ptr<tsleddens::IMaterial> m_materialGround;
     std::unique_ptr<tsleddens::IMaterial> m_materialCenter;
     std::unique_ptr<tsleddens::IMaterial> m_materialLeft;
+    std::unique_ptr<tsleddens::IMaterial> m_materialBubble;
     std::unique_ptr<tsleddens::IMaterial> m_materialRight;
 
 public:

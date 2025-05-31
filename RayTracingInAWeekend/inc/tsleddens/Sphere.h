@@ -10,9 +10,10 @@ namespace tsleddens
         IMaterial* m_pMaterial;
         float m_radius;
         float m_radius2;
+        bool m_flipNormals;
 
     public:
-        Sphere(const Point3& position, float radius, IMaterial* pMaterial);
+        Sphere(const Point3& position, float radius, IMaterial* pMaterial, bool flippedNormals = false);
 
         [[nodiscard]] const Point3& GetPosition() const { return m_position; }
 
@@ -21,5 +22,7 @@ namespace tsleddens
         [[nodiscard]] float GetRadius() const { return m_radius; }
 
         [[nodiscard]] bool Intersect(const Ray& ray, HitResult& hitResult, float minDistance, float maxDistance) const override;
+
+        [[nodiscard]] bool HasFlippedNormals() const override { return m_flipNormals; }
     };
 }
