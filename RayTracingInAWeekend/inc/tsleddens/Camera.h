@@ -18,13 +18,15 @@ namespace tsleddens
         UINT m_maxBounces = 32;
 
         float m_aspectRatio = 0.f;
-        float m_fieldOfView = 1.f;
+        float m_verticalFov = 20.f;
 
         Vector3 m_uDelta = Vector3(0);
         Vector3 m_vDelta = Vector3(0);
-        Vector3 m_viewDirection = Vector3(0.f, 0.f, -1.f);
 
-        Point3 m_position = Point3(0.f);
+        Vector3 m_lookAt = Vector3(0.f, 0.f, -1.f);
+        Vector3 m_upDirection = Vector3(0.f, 1.f, 0.f);
+
+        Point3 m_position = Point3(-2.f, 2.f, 1.f);
         Point3 m_p0 = Point3(0.f);
 
     public:
@@ -32,7 +34,12 @@ namespace tsleddens
 
         void Resize(UINT imageWidth, UINT imageHeight);
 
-        void SetFieldOfView(const float fov) { m_fieldOfView = fov; }
+        void SetVerticalFieldOfView(const float value)
+        {
+            m_verticalFov = value;
+            UpdateViewport();
+        }
+
         void SetMaxBounces(const UINT max) { m_maxBounces = max; }
         void SetSamplesPerPixel(UINT value) { m_samplesPerPixel = value < 1 ? 1 : value; }
 
@@ -45,6 +52,7 @@ namespace tsleddens
 
         bool IsRenderNormalsEnabled() const { return m_isRenderNormalsEnabled; }
     private:
+        void UpdateViewport() { Resize(m_imageWidth, m_imageHeight); }
         Ray GetRay(const UINT x, const UINT y) const;
         Color SampleColor(const Ray& ray, const IRayTraceable& world, UINT currentBounces) const;
         static Color GetNormalColor(const Vector3& normal);

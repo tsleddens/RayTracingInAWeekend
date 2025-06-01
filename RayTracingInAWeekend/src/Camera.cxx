@@ -20,13 +20,23 @@ void Camera::Resize(UINT imageWidth, UINT imageHeight)
     m_imageHeight = imageHeight;
     m_aspectRatio = static_cast<float>(imageWidth) / static_cast<float>(imageHeight);
 
-    const Point3 screenCenter = m_position + (m_fieldOfView * m_viewDirection);
-    m_p0 = screenCenter + Point3(-m_aspectRatio, -1.f, 0.f);
-    const Point3 p1 = screenCenter + Point3(m_aspectRatio, -1.f, 0.f);
-    const Point3 p2 = screenCenter + Point3(-m_aspectRatio, 1.f, 0.f);
+    const float focalLength = glm::length(m_position - m_lookAt);
+    const float theta = glm::radians(m_verticalFov);
+    const float h = glm::tan(theta / 2.f);
+    const float viewportHeight = 2.f * h * focalLength;
+    const float viewportWidth = viewportHeight * m_aspectRatio;
 
-    m_uDelta = 1.f / static_cast<float>(imageWidth) * (p1 - m_p0);
-    m_vDelta = 1.f / static_cast<float>(imageHeight) * (p2 - m_p0);
+    const Vector3 w = glm::normalize(m_position - m_lookAt);
+    const Vector3 u = glm::normalize(glm::cross(m_upDirection, w));
+    const Vector3 v = glm::cross(w, u);
+
+    const Vector3 horizontal = viewportWidth * u;
+    const Vector3 vertical = viewportHeight * v;
+
+    m_uDelta = horizontal / static_cast<float>(imageWidth);
+    m_vDelta = vertical / static_cast<float>(imageHeight);
+
+    m_p0 = m_position - (focalLength * w) - horizontal / 2.f - vertical / 2.f;
 }
 
 void Camera::TraceAndPlot(const IRayTraceable& world, const Win32Rasterizer& rasterizer)

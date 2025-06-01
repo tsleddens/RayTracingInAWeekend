@@ -22,8 +22,8 @@ HelloSphere::HelloSphere(int width, int height, const wchar_t* title):
     // m_camera.EnableRenderNormals();
     m_world.AddObject<Sphere>(Point3( 0.f, -100.5f, -1.0f), 100.0f, m_materialGround.get());
     m_world.AddObject<Sphere>(Point3( 0.f,    0.0f, -1.2f),   0.5f, m_materialCenter.get());
-    m_world.AddObject<Sphere>(Point3(-1.f,    0.0f, -1.0f),   0.5f, m_materialLeft.get(), false);
-    m_world.AddObject<Sphere>(Point3(-1.f,    0.0f, -1.0f),   0.4f, m_materialBubble.get(), false);
+    m_world.AddObject<Sphere>(Point3(-1.f,    0.0f, -1.0f),   0.5f, m_materialLeft.get());
+    m_world.AddObject<Sphere>(Point3(-1.f,    0.0f, -1.0f),   0.4f, m_materialBubble.get());
     m_world.AddObject<Sphere>(Point3( 1.f,    0.0f, -1.0f),   0.5f, m_materialRight.get());
 }
 
