@@ -1,10 +1,12 @@
 #pragma once
 #include "Defines.h"
+#include "DeFocusDisk.h"
 
 namespace tsleddens
 {
     class Win32Rasterizer;
     class Ray;
+    class DeFocusDisk;
     struct IRayTraceable;
 
     class Camera
@@ -20,14 +22,16 @@ namespace tsleddens
         float m_aspectRatio = 0.f;
         float m_verticalFov = 20.f;
 
-        Vector3 m_uDelta = Vector3(0);
-        Vector3 m_vDelta = Vector3(0);
+        Vector3 m_uDelta = Vector3(0.f);
+        Vector3 m_vDelta = Vector3(0.f);
 
         Vector3 m_lookAt = Vector3(0.f, 0.f, -1.f);
         Vector3 m_upDirection = Vector3(0.f, 1.f, 0.f);
 
         Point3 m_position = Point3(-2.f, 2.f, 1.f);
         Point3 m_p0 = Point3(0.f);
+
+        DeFocusDisk m_deFocusDisk;
 
     public:
         Camera(UINT imageWidth, UINT imageHeight);
