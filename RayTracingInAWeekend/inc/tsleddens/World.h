@@ -6,7 +6,7 @@ namespace tsleddens
 {
     class World: public IRayTraceable
     {
-        std::unique_ptr<IRayTraceable> m_objects[128];
+        std::unique_ptr<IRayTraceable> m_objects[1024];
         UINT m_count;
 
     public:

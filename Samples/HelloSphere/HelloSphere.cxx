@@ -13,18 +13,50 @@ HelloSphere::HelloSphere(int width, int height, const wchar_t* title):
     Win32Rasterizer(width, height, title),
     m_camera(Camera(width, height)),
     m_world(World()),
-    m_materialGround(std::make_unique<Lambertian>(Color(0.8f, 0.8f, 0.0f))),
-    m_materialCenter(std::make_unique<Lambertian>(Color(0.1f, 0.2f, 0.5f))),
-    m_materialLeft(std::make_unique<Dielectric>(1.5f)),
-    m_materialBubble(std::make_unique<Dielectric>(1.f / 1.5f)),
-    m_materialRight(std::make_unique<Metal>(Color(0.8f, 0.6f, 0.2f), 1.0f))
+    m_materialGround(std::make_unique<Lambertian>(Color(0.5f))),
+    m_material1(std::make_unique<Dielectric>(1.5f)),
+    m_material2(std::make_unique<Lambertian>(Color(0.4f, 0.2f, 0.1f))),
+    m_material3(std::make_unique<Metal>(Color(0.7f, 0.6f, 0.5f), 0.0f))
 {
     // m_camera.EnableRenderNormals();
-    m_world.AddObject<Sphere>(Point3( 0.f, -100.5f, -1.0f), 100.0f, m_materialGround.get());
-    m_world.AddObject<Sphere>(Point3( 0.f,    0.0f, -1.2f),   0.5f, m_materialCenter.get());
-    m_world.AddObject<Sphere>(Point3(-1.f,    0.0f, -1.0f),   0.5f, m_materialLeft.get());
-    m_world.AddObject<Sphere>(Point3(-1.f,    0.0f, -1.0f),   0.4f, m_materialBubble.get());
-    m_world.AddObject<Sphere>(Point3( 1.f,    0.0f, -1.0f),   0.5f, m_materialRight.get());
+
+    int offset = -11;
+
+    for (int i = 0; i < 23; ++i)
+    {
+        for (int j = 0; j < 23; ++j)
+        {
+            float randomMaterial = RandomFloat();
+            Point3 center(i + offset + 0.9f * RandomFloat(), 0.2f, j + offset + 0.9f * RandomFloat());
+
+            int index = i * 23 + j;
+            if ( glm::length(center - Point3(4.f, 0.2f, 0.f)) > 0.9f)
+            {
+                if (randomMaterial < 0.8f) // diffuse
+                {
+                    Color albedo = RandomVector3() * RandomVector3();
+                    m_materials[index] = std::make_unique<Lambertian>(albedo);
+                }
+                else if (randomMaterial < 0.95f) // metal
+                {
+                    Color albedo = RandomVector3(0.5f, 1.f);
+                    float fuzz = RandomFloat(0.f, 0.5f);
+                    m_materials[index] = std::make_unique<Metal>(albedo, fuzz);
+                }
+                else // glass
+                {
+                    m_materials[index] = std::make_unique<Dielectric>(1.5f);
+                }
+                m_world.AddObject<Sphere>(center, 0.2f, m_materials[index].get());
+            }
+        }
+    }
+
+    m_world.AddObject<Sphere>(Point3( 0.f, -1000.f, 0.f), 1000.f, m_materialGround.get());
+    m_world.AddObject<Sphere>(Point3( 0.f, 1.f, 0.f), 1.f, m_material1.get());
+    m_world.AddObject<Sphere>(Point3( -4.f, 1.f, 0.f), 1.f, m_material2.get());
+    m_world.AddObject<Sphere>(Point3( 4.f, 1.f, 0.f), 1.f, m_material3.get());
+    m_camera.SetDeFocusValues(10.0f, 0.6f);
 }
 
 void HelloSphere::OnResize(UINT newWidth, UINT newHeight)

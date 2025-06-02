@@ -9,10 +9,10 @@ class HelloSphere final : public tsleddens::Win32Rasterizer
     tsleddens::Camera m_camera;
     tsleddens::World m_world;
     std::unique_ptr<tsleddens::IMaterial> m_materialGround;
-    std::unique_ptr<tsleddens::IMaterial> m_materialCenter;
-    std::unique_ptr<tsleddens::IMaterial> m_materialLeft;
-    std::unique_ptr<tsleddens::IMaterial> m_materialBubble;
-    std::unique_ptr<tsleddens::IMaterial> m_materialRight;
+    std::unique_ptr<tsleddens::IMaterial> m_material1;
+    std::unique_ptr<tsleddens::IMaterial> m_material2;
+    std::unique_ptr<tsleddens::IMaterial> m_material3;
+    std::unique_ptr<tsleddens::IMaterial> m_materials[529];
 
 public:
     HelloSphere(int width, int height, const wchar_t* title);

@@ -46,7 +46,7 @@ inline float RandomFloat(float min, float max)
     return min + (max - min) * RandomFloat();
 }
 
-inline Vector3 RandomVector3(float min, float max)
+inline Vector3 RandomVector3(float min = 0.f, float max = 1.f)
 {
     return Vector3(
         RandomFloat(min, max),

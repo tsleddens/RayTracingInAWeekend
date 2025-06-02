@@ -10,7 +10,7 @@
 using namespace tsleddens;
 
 Camera::Camera(UINT imageWidth, UINT imageHeight) :
-    m_deFocusDisk(DeFocusDisk(10.f, 3.4f))
+    m_deFocusDisk(DeFocusDisk())
 {
     Resize(imageWidth, imageHeight);
 }
