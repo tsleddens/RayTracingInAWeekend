@@ -14,6 +14,8 @@ class HelloSphere final : public tsleddens::Win32Rasterizer
     std::unique_ptr<tsleddens::IMaterial> m_material3;
     std::unique_ptr<tsleddens::IMaterial> m_materials[529];
 
+    ULONGLONG m_frameCount = 0;
+
 public:
     HelloSphere(int width, int height, const wchar_t* title);
 
@@ -22,10 +24,10 @@ public:
 protected:
     void OnInit() override {}
     void OnResize(UINT newWidth, UINT newHeight) override;
-    void OnUpdate() override;
+    void OnUpdate() override {}
     void OnBeforeRender() override;
-    void OnAfterRender() override {}
+    void OnAfterRender() override;
     void OnDestroy() override {}
 private:
-    void UpdateFps() const;
+    void UpdateFps();
 };

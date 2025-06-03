@@ -13,7 +13,7 @@ using Vector3 = glm::vec3;
 using Point3 = glm::vec3;
 using Color = glm::vec3;
 using Pixel = glm::vec2;
-using ColorCode = unsigned int;
+using ColorCode = uint32_t;
 
 constexpr float EPSILON = 1e-4f;
 
@@ -30,9 +30,9 @@ inline float LinearToGamma(float linear)
 
 inline ColorCode ColorToColorCode(const Color& color)
 {
-    const auto r = static_cast<unsigned int>(LinearToGamma(color.x) * 255.999f) & 0xff;
-    const auto g = static_cast<unsigned int>(LinearToGamma(color.y) * 255.999f) & 0xff;
-    const auto b = static_cast<unsigned int>(LinearToGamma(color.z) * 255.999f) & 0xff;
+    const auto r = static_cast<ColorCode>(LinearToGamma(color.x) * 255.999f) & 0xff;
+    const auto g = static_cast<ColorCode>(LinearToGamma(color.y) * 255.999f) & 0xff;
+    const auto b = static_cast<ColorCode>(LinearToGamma(color.z) * 255.999f) & 0xff;
     return (r << 16) + (g << 8) + b;
 }
 

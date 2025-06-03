@@ -41,7 +41,7 @@ void Camera::Resize(UINT imageWidth, UINT imageHeight)
     m_p0 = m_position - (m_deFocusDisk.GetDistance() * w) - horizontal / 2.f - vertical / 2.f;
 }
 
-void Camera::TraceAndPlot(const IRayTraceable& world, const Win32Rasterizer& rasterizer)
+void Camera::TraceAndPlot(const IRayTraceable& world, Win32Rasterizer& rasterizer)
 {
     float reciprocalFrameCount = 1.f / static_cast<float>(m_frameCount);
     for (UINT y = 0; y < m_imageHeight; ++y)

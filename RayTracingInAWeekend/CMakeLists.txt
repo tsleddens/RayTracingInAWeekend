@@ -6,24 +6,27 @@ set(INTERFACE_INC_FOLDER ${PROJECT_SOURCE_DIR}/inc)
 set(PRIVATE_INC_FOLDER ${PROJECT_SOURCE_DIR}/inc/tsleddens)
 set(PRIVATE_MATERIALS_INC_FOLDER ${PRIVATE_INC_FOLDER}/Materials)
 set(INC_FILES 
-    ${PRIVATE_INC_FOLDER}/IRayTraceable.h
+    ${PRIVATE_INC_FOLDER}/Aligned2DArray.h
+    ${PRIVATE_INC_FOLDER}/BufferedGdiBitmap.h
     ${PRIVATE_INC_FOLDER}/Camera.h
     ${PRIVATE_INC_FOLDER}/Defines.h
     ${PRIVATE_INC_FOLDER}/DeFocusDisk.h
     ${PRIVATE_INC_FOLDER}/HitResult.h
+    ${PRIVATE_INC_FOLDER}/IRayTraceable.h
     ${PRIVATE_INC_FOLDER}/Ray.h
     ${PRIVATE_INC_FOLDER}/Sphere.h
     ${PRIVATE_INC_FOLDER}/Win32Rasterizer.h
     ${PRIVATE_INC_FOLDER}/World.h
 
-    ${PRIVATE_MATERIALS_INC_FOLDER}/IMaterial.h
     ${PRIVATE_MATERIALS_INC_FOLDER}/Dielectric.h
+    ${PRIVATE_MATERIALS_INC_FOLDER}/IMaterial.h
     ${PRIVATE_MATERIALS_INC_FOLDER}/Lambertian.h
     ${PRIVATE_MATERIALS_INC_FOLDER}/Metal.h
 )
 
 set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)
 set(SRC_FILES 
+    ${SRC_FOLDER}/BufferedGdiBitmap.cxx
     ${SRC_FOLDER}/Camera.cxx
     ${SRC_FOLDER}/DeFocusDisk.cxx
     ${SRC_FOLDER}/Sphere.cxx

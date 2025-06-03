@@ -1,5 +1,7 @@
 #include "Win32Rasterizer.h"
 
+#include <mutex>
+
 using namespace tsleddens;
 
 Win32Rasterizer::Win32Rasterizer(UINT width, UINT height, const wchar_t* title) :
@@ -7,46 +9,71 @@ Win32Rasterizer::Win32Rasterizer(UINT width, UINT height, const wchar_t* title) 
     m_height(height),
     m_aspectRatio(static_cast<float>(width) / static_cast<float>(height)),
     m_hwnd(CreateWindowHandle(title)),
-    m_hdc(GetDC(GetWindowHandle())),
-    m_hdcMem(CreateCompatibleDC(m_hdc)),
-    m_hBackBuffer(CreateBackBuffer(width, height))
+    m_colorAccumulator(width, height),
+    m_bufferedGdiBitmap(BufferedGdiBitmap(width, height, m_hwnd))
 {
 }
 
 Win32Rasterizer::~Win32Rasterizer()
 {
-    DestroyBackBuffer();
-
-    DeleteDC(m_hdcMem);
-    DeleteDC(m_hdc);
+    m_isRunning = false;
+    if (m_renderThread.joinable())
+    {
+        m_renderThread.join();
+    }
 }
 
 int Win32Rasterizer::Run(int cmdShow)
 {
     OnInit();
     ShowWindow(m_hwnd, cmdShow);
+
+    m_renderThread = std::thread([this]()
+    {
+        while (m_isRunning)
+        {
+            OnUpdate();
+            {
+                std::scoped_lock lock(m_renderLock);
+                OnBeforeRender();
+            }
+
+            InvalidateRect(m_hwnd, nullptr, FALSE);
+            OnAfterRender();
+        }
+    });
+
     const int exitCode = StartMessageLoop();
     OnDestroy();
 
     return exitCode;
 }
 
-void Win32Rasterizer::PlotPixel(UINT x, UINT y, const Color& color, float reciprocalFrameCount) const
+void Win32Rasterizer::PlotPixel(UINT x, UINT y, const Color& color, float reciprocalFrameCount)
 {
-    m_ppColors[y][x] += (color - m_ppColors[y][x]) * reciprocalFrameCount;
-    m_ppBackBufferRows[y][x] = ColorToColorCode(m_ppColors[y][x]);
+    m_colorAccumulator[y][x] += (color - m_colorAccumulator[y][x]) * reciprocalFrameCount;
+    m_bufferedGdiBitmap.SetPixel(x, y, m_colorAccumulator[y][x]);
+}
+
+void Win32Rasterizer::SetWindowTitle(const wchar_t* title) const
+{
+    SetWindowText(m_hwnd, title);
 }
 
 void Win32Rasterizer::Resize(UINT width, UINT height)
 {
     if (width > 0 && height > 0 && (width != m_width || height != m_height))
     {
+        std::scoped_lock lock(m_renderLock);
         m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
-        m_hBackBuffer = CreateBackBuffer(width, height);
-        OnResize(width, height);
+
+        m_bufferedGdiBitmap.Resize(width, height);
+        m_colorAccumulator.Resize(width, height);
 
         m_width = width;
         m_height = height;
+
+        OnResize(width, height);
     }
 }
 
@@ -57,70 +84,11 @@ RECT Win32Rasterizer::GetClientSurface() const
     return clientSurface;
 }
 
-void Win32Rasterizer::DestroyBackBuffer() const
+void Win32Rasterizer::Render()
+
 {
-    for (UINT y = 0; y < m_height; ++y)
-    {
-        delete[] m_ppColors[y];
-    }
-
-    DeleteObject(m_hBackBuffer);
-    _aligned_free(static_cast<void*>(m_ppBackBufferRows));
-    _aligned_free(static_cast<void*>(m_ppColors));
-}
-
-void Win32Rasterizer::Render() const
-{
-    BITMAP bitmap;
-    GetObject(m_hBackBuffer, sizeof(BITMAP), &bitmap);
-
-    SelectObject(m_hdcMem, m_hBackBuffer);
-
-    BitBlt(m_hdc, 0, 0, bitmap.bmWidth, bitmap.bmHeight, m_hdcMem, 0, 0, SRCCOPY);
-}
-
-HBITMAP Win32Rasterizer::CreateBackBuffer(UINT width, UINT height)
-{
-    if (m_pBackBufferPixels != nullptr)
-    {
-        DestroyBackBuffer();
-    }
-
-    UINT alignment = sizeof(UINT*);
-    UINT size = height * alignment;
-    m_ppBackBufferRows = static_cast<UINT**>(_aligned_malloc(size, alignment));
-
-    UINT colorAlignment = sizeof(Color*);
-    UINT colorSize = height * colorAlignment;
-    m_ppColors = static_cast<Color**>(_aligned_malloc(colorSize, colorAlignment));
-
-    BITMAPINFO bitmapInfo;
-    bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bitmapInfo.bmiHeader.biWidth = static_cast<long>(width);
-    bitmapInfo.bmiHeader.biHeight = static_cast<long>(height);
-    bitmapInfo.bmiHeader.biPlanes = 1;
-    bitmapInfo.bmiHeader.biBitCount = s_BitCount;
-    bitmapInfo.bmiHeader.biCompression = BI_RGB;
-
-    HBITMAP hBitmap = CreateDIBSection(nullptr, &bitmapInfo, 0, reinterpret_cast<void**>(&m_pBackBufferPixels), nullptr, 0);
-    assert(hBitmap != nullptr);
-
-    if (m_ppBackBufferRows != nullptr)
-    {
-        for(UINT y = 0; y < height; ++y)
-        {
-            const UINT rowBeginIndex = y * width;
-            m_ppBackBufferRows[y] = &m_pBackBufferPixels[rowBeginIndex];
-
-            m_ppColors[y] = new Color[width];
-            for (UINT x = 0; x < width; x++)
-            {
-                m_ppColors[y][x] = Color(0.f);
-            }
-        }
-    }
-
-    return hBitmap;
+    std::scoped_lock lock(m_renderLock);
+    m_bufferedGdiBitmap.Paint();
 }
 
 LRESULT Win32Rasterizer::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -138,10 +106,7 @@ LRESULT Win32Rasterizer::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM l
     case WM_PAINT:
         if (pApp != nullptr)
         {
-            pApp->OnUpdate();
-            pApp->OnBeforeRender();
             pApp->Render();
-            pApp->OnAfterRender();
         }
         return 0;
     case WM_SIZE:
@@ -207,6 +172,7 @@ int Win32Rasterizer::StartMessageLoop()
             DispatchMessage(&msg);
         }
     }
+    m_isRunning = false;
     const int exitCode = static_cast<int>(msg.wParam);
     return exitCode;
 }

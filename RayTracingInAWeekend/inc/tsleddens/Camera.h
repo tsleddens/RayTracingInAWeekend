@@ -53,7 +53,7 @@ namespace tsleddens
         void SetMaxBounces(const UINT max) { m_maxBounces = max; }
         void SetSamplesPerPixel(UINT value) { m_samplesPerPixel = value < 1 ? 1 : value; }
 
-        void TraceAndPlot(const IRayTraceable& world, const Win32Rasterizer& rasterizer);
+        void TraceAndPlot(const IRayTraceable& world, Win32Rasterizer& rasterizer);
         void EnableRenderNormals() { m_isRenderNormalsEnabled = true; }
         void DisableRenderNormals() { m_isRenderNormalsEnabled = false; }
 

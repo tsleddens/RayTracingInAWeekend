@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BufferedGdiBitmap.h"
 #include "Defines.h"
 
 namespace tsleddens
@@ -15,15 +16,12 @@ namespace tsleddens
 
         HWND m_hwnd;
 
-        HDC m_hdc;
-        HDC m_hdcMem;
+        Aligned2DArray<Color> m_colorAccumulator;
+        BufferedGdiBitmap m_bufferedGdiBitmap;
 
-        Color** m_ppColors{};
-
-        unsigned int** m_ppBackBufferRows {};
-        unsigned int* m_pBackBufferPixels {};
-
-        HBITMAP m_hBackBuffer;
+        std::mutex m_renderLock;
+        std::thread m_renderThread;
+        std::atomic<bool> m_isRunning { true };
     public:
 
 
@@ -31,7 +29,7 @@ namespace tsleddens
 
         int Run(int cmdShow);
 
-        void PlotPixel(UINT x, UINT y, const Color& color, float reciprocalFrameCount) const;
+        void PlotPixel(UINT x, UINT y, const Color& color, float reciprocalFrameCount);
 
     protected:
         Win32Rasterizer(UINT width, UINT height, const wchar_t* title);
@@ -43,21 +41,17 @@ namespace tsleddens
         virtual void OnAfterRender() = 0;
         virtual void OnDestroy() = 0;
 
-        void SetWindowTitle(const wchar_t* title) const { SetWindowText(m_hwnd, title); }
+        void SetWindowTitle(const wchar_t* title) const;
         void Resize(UINT width, UINT height);
 
         [[nodiscard]] UINT GetWidth() const { return m_width; }
         [[nodiscard]] UINT GetHeight() const { return m_height; }
         [[nodiscard]] UINT GetPixelCount() const { return m_height * m_width; }
         [[nodiscard]] float GetAspectRatio() const { return m_aspectRatio; }
-        [[nodiscard]] ColorCode GetColorCode(int x, int y) const { return m_ppBackBufferRows[y][x]; }
-        [[nodiscard]] Color GetColor(int x, int y) const { return m_ppColors[y][x]; }
+        [[nodiscard]] Color GetColor(int x, int y) const { return m_colorAccumulator[y][x]; }
 
     private:
-        void Render() const;
-
-        HBITMAP CreateBackBuffer(UINT width, UINT height);
-        void DestroyBackBuffer() const;
+        void Render();
 
         static LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
         HWND CreateWindowHandle(const wchar_t* title);
@@ -65,7 +59,6 @@ namespace tsleddens
         int StartMessageLoop();
 
         [[nodiscard]] RECT GetClientSurface() const;
-        [[nodiscard]] HDC GetDeviceContextHandle() const { return m_hdc; }
         [[nodiscard]] HWND GetWindowHandle() const { return m_hwnd; }
         [[nodiscard]] HINSTANCE GetInstanceHandle() const { return GetModuleHandle(nullptr); }
 
