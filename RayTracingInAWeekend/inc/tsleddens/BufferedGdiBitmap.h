@@ -23,8 +23,9 @@ namespace tsleddens
 
         void Paint() const;
         void Resize(UINT width, UINT height);
-        void SetPixel(UINT x, UINT y, const Color& color);
-        void CopyToFrontBuffer() const;
+
+        void SetPixel(UINT x, UINT y, const Color& color) { m_backBuffer[y][x] = ColorToColorCode(color); }
+        void CopyToFrontBuffer() const { m_backBuffer.CopyInto(m_pFrontBuffer); }
 
         [[nodiscard]] HBITMAP GetBitmap() const { return m_hBitmap; }
         [[nodiscard]] UINT GetWidth() const { return m_width; }

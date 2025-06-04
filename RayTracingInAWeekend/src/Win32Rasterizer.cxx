@@ -58,12 +58,6 @@ int Win32Rasterizer::Run(int cmdShow)
     return exitCode;
 }
 
-void Win32Rasterizer::PlotPixel(UINT x, UINT y, const Color& color, float reciprocalFrameCount)
-{
-    m_colorAccumulator[y][x] += (color - m_colorAccumulator[y][x]) * reciprocalFrameCount;
-    m_bufferedGdiBitmap.SetPixel(x, y, m_colorAccumulator[y][x]);
-}
-
 void Win32Rasterizer::SetWindowTitle(const wchar_t* title) const
 {
     SetWindowText(m_hwnd, title);

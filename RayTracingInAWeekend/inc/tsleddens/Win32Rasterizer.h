@@ -31,7 +31,11 @@ namespace tsleddens
 
         int Run(int cmdShow);
 
-        void PlotPixel(UINT x, UINT y, const Color& color, float reciprocalFrameCount);
+        void PlotPixel(UINT x, UINT y, const Color& color, float reciprocalFrameCount)
+        {
+            m_colorAccumulator[y][x] += (color - m_colorAccumulator[y][x]) * reciprocalFrameCount;
+            m_bufferedGdiBitmap.SetPixel(x, y, m_colorAccumulator[y][x]);
+        }
 
     protected:
         Win32Rasterizer(UINT width, UINT height, const wchar_t* title);

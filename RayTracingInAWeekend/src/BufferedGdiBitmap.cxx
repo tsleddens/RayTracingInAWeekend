@@ -58,16 +58,6 @@ void BufferedGdiBitmap::Resize(UINT width, UINT height)
     m_height = height;
 }
 
-void BufferedGdiBitmap::SetPixel(UINT x, UINT y, const Color& color)
-{
-    m_backBuffer[y][x] = ColorToColorCode(color);
-}
-
-void BufferedGdiBitmap::CopyToFrontBuffer() const
-{
-    m_backBuffer.CopyInto(m_pFrontBuffer);
-}
-
 void BufferedGdiBitmap::DeleteGdiResources()
 {
     if (m_hBitmap)
