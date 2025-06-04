@@ -10,7 +10,7 @@ Win32Rasterizer::Win32Rasterizer(UINT width, UINT height, const wchar_t* title) 
     m_aspectRatio(static_cast<float>(width) / static_cast<float>(height)),
     m_hwnd(CreateWindowHandle(title)),
     m_colorAccumulator(width, height),
-    m_bufferedGdiBitmap(BufferedGdiBitmap(width, height, m_hwnd))
+    m_bufferedGdiBitmap(width, height, m_hwnd)
 {
 }
 
