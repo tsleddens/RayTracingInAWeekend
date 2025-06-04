@@ -32,6 +32,12 @@ int Win32Rasterizer::Run(int cmdShow)
     {
         while (m_isRunning)
         {
+            if (m_isResizing)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                continue;
+            }
+
             OnUpdate();
             {
                 std::scoped_lock lock(m_renderLock);
@@ -44,8 +50,11 @@ int Win32Rasterizer::Run(int cmdShow)
     });
 
     const int exitCode = StartMessageLoop();
+    if (m_renderThread.joinable())
+    {
+        m_renderThread.join();
+    }
     OnDestroy();
-
     return exitCode;
 }
 
@@ -64,15 +73,16 @@ void Win32Rasterizer::Resize(UINT width, UINT height)
 {
     if (width > 0 && height > 0 && (width != m_width || height != m_height))
     {
-        std::scoped_lock lock(m_renderLock);
-        m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+        {
+            std::scoped_lock lock(m_renderLock);
+            m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
-        m_bufferedGdiBitmap.Resize(width, height);
-        m_colorAccumulator.Resize(width, height);
+            m_bufferedGdiBitmap.Resize(width, height);
+            m_colorAccumulator.Resize(width, height);
 
-        m_width = width;
-        m_height = height;
-
+            m_width = width;
+            m_height = height;
+        }
         OnResize(width, height);
     }
 }
@@ -91,10 +101,28 @@ void Win32Rasterizer::Render()
     m_bufferedGdiBitmap.Paint();
 }
 
+LRESULT Win32Rasterizer::StaticWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    Win32Rasterizer* pApp = nullptr;
+
+    if (msg == WM_CREATE)
+    {
+        const auto pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
+        pApp = static_cast<Win32Rasterizer*>(pCreateStruct->lpCreateParams);
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pApp));
+    }
+    else
+    {
+        pApp = reinterpret_cast<Win32Rasterizer*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+    }
+
+    return pApp
+               ? pApp->WindowProc(hWnd, msg, wParam, lParam)
+               : DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
 LRESULT Win32Rasterizer::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    const auto pApp = reinterpret_cast<Win32Rasterizer*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-
     switch (msg)
     {
     case WM_CREATE:
@@ -102,20 +130,23 @@ LRESULT Win32Rasterizer::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM l
             const auto pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
             SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pCreateStruct->lpCreateParams));
         }
-    return 0;
+        return 0;
+    case WM_ENTERSIZEMOVE:
+        m_isResizing = true;
+        return 0;
+    case WM_EXITSIZEMOVE:
+        m_isResizing = false;
+        return 0;
     case WM_PAINT:
-        if (pApp != nullptr)
-        {
-            pApp->Render();
-        }
+        Render();
         return 0;
     case WM_SIZE:
         {
             UINT width = LOWORD(lParam);
             UINT height = HIWORD(lParam);
-            pApp->Resize(width, height);
-            return 0;
+            Resize(width, height);
         }
+        return 0;
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
@@ -126,8 +157,8 @@ LRESULT Win32Rasterizer::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM l
 
 HWND Win32Rasterizer::CreateWindowHandle(const wchar_t* title)
 {
-    const auto windowClass = RegisterWindowClass(WindowProc);
-    RECT windowRect = { 0, 0, static_cast<long>(m_width), static_cast<long>(m_height) };
+    const auto windowClass = RegisterWindowClass(StaticWindowProc);
+    RECT windowRect = {0, 0, static_cast<long>(m_width), static_cast<long>(m_height)};
     AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
     const auto window = CreateWindow(
@@ -173,6 +204,5 @@ int Win32Rasterizer::StartMessageLoop()
         }
     }
     m_isRunning = false;
-    const int exitCode = static_cast<int>(msg.wParam);
-    return exitCode;
+    return static_cast<int>(msg.wParam);
 }

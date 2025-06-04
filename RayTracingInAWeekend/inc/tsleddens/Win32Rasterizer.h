@@ -21,7 +21,9 @@ namespace tsleddens
 
         std::mutex m_renderLock;
         std::thread m_renderThread;
+
         std::atomic<bool> m_isRunning { true };
+        std::atomic<bool> m_isResizing { false };
     public:
 
 
@@ -53,7 +55,8 @@ namespace tsleddens
     private:
         void Render();
 
-        static LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+        static LRESULT CALLBACK StaticWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+        LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
         HWND CreateWindowHandle(const wchar_t* title);
         WNDCLASSEX RegisterWindowClass(WNDPROC messageHandlerCallback) const;
         int StartMessageLoop();
