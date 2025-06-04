@@ -77,6 +77,7 @@ void HelloSphere::OnAfterRender()
 
 void HelloSphere::UpdateFps()
 {
+    ++m_frameCount;
     static ULONGLONG framesPassed = m_frameCount;
     static ULONGLONG prevCount = GetTickCount();
     if (GetTickCount64() - prevCount > 1000) // only update every second
@@ -87,5 +88,4 @@ void HelloSphere::UpdateFps()
         framesPassed = m_frameCount;
         prevCount = GetTickCount64();
     }
-    ++m_frameCount;
 }
