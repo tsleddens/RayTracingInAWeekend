@@ -76,8 +76,9 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT curre
         return Color(0.f);
     }
 
+    Range<float> range(0.001f, FLT_MAX);
     HitResult hitResult;
-    if (world.Intersect(ray, hitResult, 0.001f, FLT_MAX))
+    if (world.Intersect(ray, hitResult, range))
     {
         if (m_isRenderNormalsEnabled)
         {

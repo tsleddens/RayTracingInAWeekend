@@ -18,7 +18,7 @@ namespace tsleddens
         template<typename TRayTraceable, typename... TArgs>
         void AddObject(TArgs&&... args);
 
-        [[nodiscard]] bool Intersect(const Ray& ray, HitResult& hitResult, float minDistance, float maxDistance) const override;
+        [[nodiscard]] bool Intersect(const Ray& ray, HitResult& hitResult, Range<float>& range) const override;
 
         [[nodiscard]] IMaterial* GetMaterial() const override;
         [[nodiscard]] bool HasFlippedNormals() const override { return false; }

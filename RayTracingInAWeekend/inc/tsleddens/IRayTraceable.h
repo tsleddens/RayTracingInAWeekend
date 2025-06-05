@@ -1,4 +1,5 @@
 #pragma once
+#include "Range.h"
 
 namespace tsleddens
 {
@@ -10,7 +11,7 @@ namespace tsleddens
     {
         virtual ~IRayTraceable() = default;
 
-        [[nodiscard]] virtual bool Intersect(const Ray& ray, HitResult& hitResult, float minDistance, float maxDistance) const = 0;
+        [[nodiscard]] virtual bool Intersect(const Ray& ray, HitResult& hitResult, Range<float>& range) const = 0;
         [[nodiscard]] virtual IMaterial* GetMaterial() const = 0;
         [[nodiscard]] virtual bool HasFlippedNormals() const = 0;
     };

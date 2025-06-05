@@ -11,15 +11,15 @@ World::World() :
 
 }
 
-bool World::Intersect(const Ray& ray, HitResult& hitResult, float minDistance, float maxDistance) const
+bool World::Intersect(const Ray& ray, HitResult& hitResult, Range<float>& range) const
 {
     bool isHit = false;
     for (UINT i = 0; i < m_count; ++i)
     {
-        if (m_objects[i]->Intersect(ray, hitResult, minDistance, maxDistance))
+        if (m_objects[i]->Intersect(ray, hitResult, range))
         {
             isHit = true;
-            maxDistance = hitResult.GetDistance();
+            range.SetMax(hitResult.GetDistance());
         }
     }
 

@@ -6,6 +6,7 @@ set(INTERFACE_INC_FOLDER ${PROJECT_SOURCE_DIR}/inc)
 set(PRIVATE_INC_FOLDER ${PROJECT_SOURCE_DIR}/inc/tsleddens)
 set(PRIVATE_MATERIALS_INC_FOLDER ${PRIVATE_INC_FOLDER}/Materials)
 set(INC_FILES 
+    ${PRIVATE_INC_FOLDER}/AABB.h
     ${PRIVATE_INC_FOLDER}/Aligned2DArray.h
     ${PRIVATE_INC_FOLDER}/BufferedGdiBitmap.h
     ${PRIVATE_INC_FOLDER}/Camera.h
@@ -13,6 +14,7 @@ set(INC_FILES
     ${PRIVATE_INC_FOLDER}/DeFocusDisk.h
     ${PRIVATE_INC_FOLDER}/HitResult.h
     ${PRIVATE_INC_FOLDER}/IRayTraceable.h
+    ${PRIVATE_INC_FOLDER}/Range.h
     ${PRIVATE_INC_FOLDER}/Ray.h
     ${PRIVATE_INC_FOLDER}/Sphere.h
     ${PRIVATE_INC_FOLDER}/Win32Rasterizer.h
@@ -26,6 +28,7 @@ set(INC_FILES
 
 set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)
 set(SRC_FILES 
+    ${SRC_FOLDER}/AABB.cxx
     ${SRC_FOLDER}/BufferedGdiBitmap.cxx
     ${SRC_FOLDER}/Camera.cxx
     ${SRC_FOLDER}/DeFocusDisk.cxx

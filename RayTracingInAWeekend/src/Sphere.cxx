@@ -14,7 +14,7 @@ Sphere::Sphere(const Point3& position, float radius, IMaterial* pMaterial, bool 
 {
 }
 
-bool Sphere::Intersect(const Ray& ray, HitResult& hitResult, float minDistance, float maxDistance) const
+bool Sphere::Intersect(const Ray& ray, HitResult& hitResult, Range<float>& range) const
 {
     Vector3 diff = m_position - ray.GetOrigin();
     float tca = glm::dot(diff, ray.GetDirection());
@@ -28,7 +28,7 @@ bool Sphere::Intersect(const Ray& ray, HitResult& hitResult, float minDistance, 
 
         float t = (t0 > 0.f) ? t0 : (t1 > 0.f) ? t1 : FLT_MIN;
 
-        if (t > FLT_MIN && t > minDistance && t < maxDistance)
+        if (t > FLT_MIN && range.IsInRange(t, false))
         {
             hitResult.SetDistance(t, ray);
             hitResult.SetFaceNormal(ray, glm::normalize(hitResult.GetIntersection() - m_position), m_flipNormals);
