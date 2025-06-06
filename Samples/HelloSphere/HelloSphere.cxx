@@ -21,14 +21,14 @@ HelloSphere::HelloSphere(int width, int height, const wchar_t* title):
     // m_camera.EnableRenderNormals();
 
     int offset = -11;
-    
+
     for (int i = 0; i < 23; ++i)
     {
         for (int j = 0; j < 23; ++j)
         {
             float randomMaterial = RandomFloat();
             Point3 center(i + offset + 0.9f * RandomFloat(), 0.2f, j + offset + 0.9f * RandomFloat());
-    
+
             int index = i * 23 + j;
             if (glm::length(center - Point3(4.f, 0.2f, 0.f)) > 0.9f)
             {

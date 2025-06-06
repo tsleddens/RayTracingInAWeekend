@@ -1,4 +1,5 @@
 #pragma once
+#include "AABB.h"
 #include "Range.h"
 
 namespace tsleddens
@@ -14,5 +15,6 @@ namespace tsleddens
         [[nodiscard]] virtual bool Intersect(const Ray& ray, HitResult& hitResult, Range<float>& range) const = 0;
         [[nodiscard]] virtual IMaterial* GetMaterial() const = 0;
         [[nodiscard]] virtual bool HasFlippedNormals() const = 0;
+        [[nodiscard]] virtual const AABB& BoundingBox() const = 0;
     };
 }

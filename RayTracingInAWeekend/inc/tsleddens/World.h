@@ -8,6 +8,7 @@ namespace tsleddens
     {
         std::unique_ptr<IRayTraceable> m_objects[1024];
         UINT m_count;
+        AABB m_boundingBox{};
 
     public:
         World();
@@ -22,6 +23,7 @@ namespace tsleddens
 
         [[nodiscard]] IMaterial* GetMaterial() const override;
         [[nodiscard]] bool HasFlippedNormals() const override { return false; }
+        [[nodiscard]] const AABB& BoundingBox() const override { return m_boundingBox; }
     };
 }
 
@@ -29,6 +31,7 @@ template <typename Factory>
 void tsleddens::World::AddObject(Factory&& factory)
 {
     m_objects[m_count] = factory();
+    m_boundingBox = AABB(m_boundingBox, m_objects[m_count]->BoundingBox());
     m_count++;
 }
 
@@ -37,5 +40,6 @@ void tsleddens::World::AddObject(TArgs&&... args)
 {
     static_assert(std::is_base_of_v<IRayTraceable, TRayTraceable>, "TRayTraceable must derive from IRayTraceable");
     m_objects[m_count] = std::make_unique<TRayTraceable>(std::forward<TArgs>(args)...);
+    m_boundingBox = AABB(m_boundingBox, m_objects[m_count]->BoundingBox());
     m_count++;
 }

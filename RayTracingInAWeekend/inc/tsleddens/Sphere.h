@@ -6,6 +6,7 @@ namespace tsleddens
 {
     class Sphere: public IRayTraceable
     {
+        AABB m_boundingBox;
         Point3 m_position;
         IMaterial* m_pMaterial;
         float m_radius;
@@ -24,5 +25,7 @@ namespace tsleddens
         [[nodiscard]] bool Intersect(const Ray& ray, HitResult& hitResult, Range<float>& range) const override;
 
         [[nodiscard]] bool HasFlippedNormals() const override { return m_flipNormals; }
+
+        [[nodiscard]] const AABB& BoundingBox() const override { return m_boundingBox; }
     };
 }

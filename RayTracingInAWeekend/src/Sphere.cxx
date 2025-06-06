@@ -12,6 +12,8 @@ Sphere::Sphere(const Point3& position, float radius, IMaterial* pMaterial, bool 
     m_radius2(radius * radius),
     m_flipNormals(flippedNormals)
 {
+    Vector3 radiusVector(radius);
+    m_boundingBox = AABB(m_position - radiusVector, m_position + radiusVector);
 }
 
 bool Sphere::Intersect(const Ray& ray, HitResult& hitResult, Range<float>& range) const

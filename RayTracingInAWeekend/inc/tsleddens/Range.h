@@ -10,8 +10,17 @@ namespace tsleddens
         T m_max;
 
     public:
-        Range(T min, T max)
-            : m_min(min), m_max(max)
+        Range() = default;
+
+        Range(T min, T max) :
+            m_min(std::min(min, max)),
+            m_max(std::max(min, max))
+        {
+        }
+
+        Range(const Range<T>& a, const Range<T>& b) :
+            m_min(a.m_min <= b.m_min ? a.m_min : b.m_min),
+            m_max(a.m_max >= b.m_max ? a.m_max : b.m_max)
         {
         }
 
