@@ -57,6 +57,8 @@ HelloSphere::HelloSphere(int width, int height, const wchar_t* title):
     m_world.AddObject<Sphere>(Point3(-4.f, 1.f, 0.f), 1.f, m_material2.get());
     m_world.AddObject<Sphere>(Point3( 4.f, 1.f, 0.f), 1.f, m_material3.get());
     m_camera.SetDeFocusValues(10.0f, 0.6f);
+
+    m_bvh = BvhNode(m_world, 0, m_world.GetObjectCount());
 }
 
 void HelloSphere::OnResize(UINT newWidth, UINT newHeight)
@@ -67,7 +69,7 @@ void HelloSphere::OnResize(UINT newWidth, UINT newHeight)
 
 void HelloSphere::OnBeforeRender()
 {
-    m_camera.TraceAndPlot(m_world, *this);
+    m_camera.TraceAndPlot(m_bvh, *this);
 }
 
 void HelloSphere::OnAfterRender()

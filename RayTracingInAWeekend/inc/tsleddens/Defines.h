@@ -17,6 +17,13 @@ using ColorCode = uint32_t;
 
 constexpr float EPSILON = 1e-4f;
 
+enum EAxis : uint8_t
+{
+    X,
+    Y,
+    Z
+};
+
 inline float LinearToGamma(float linear)
 {
     constexpr float gamma = 1.f / 2.2f;
@@ -44,6 +51,11 @@ inline float RandomFloat()
 inline float RandomFloat(float min, float max)
 {
     return min + (max - min) * RandomFloat();
+}
+
+inline int RandomInt(int min, int max)
+{
+    return static_cast<int>(RandomFloat(min, max + 1));
 }
 
 inline Vector3 RandomVector3(float min = 0.f, float max = 1.f)

@@ -16,7 +16,7 @@ Sphere::Sphere(const Point3& position, float radius, IMaterial* pMaterial, bool 
     m_boundingBox = AABB(m_position - radiusVector, m_position + radiusVector);
 }
 
-bool Sphere::Intersect(const Ray& ray, HitResult& hitResult, Range<float>& range) const
+bool Sphere::Intersect(const Ray& ray, HitResult& hitResult, Range<float> range) const
 {
     Vector3 diff = m_position - ray.GetOrigin();
     float tca = glm::dot(diff, ray.GetDirection());

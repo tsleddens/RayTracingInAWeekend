@@ -1,5 +1,6 @@
 #pragma once
 
+#include "tsleddens/BvhNode.h"
 #include "tsleddens/Camera.h"
 #include "tsleddens/Win32Rasterizer.h"
 #include "tsleddens/World.h"
@@ -8,6 +9,7 @@ class HelloSphere final : public tsleddens::Win32Rasterizer
 {
     tsleddens::Camera m_camera;
     tsleddens::World m_world;
+    tsleddens::BvhNode m_bvh;
     std::unique_ptr<tsleddens::IMaterial> m_materialGround;
     std::unique_ptr<tsleddens::IMaterial> m_material1;
     std::unique_ptr<tsleddens::IMaterial> m_material2;

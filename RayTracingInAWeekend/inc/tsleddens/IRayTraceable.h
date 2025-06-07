@@ -12,7 +12,7 @@ namespace tsleddens
     {
         virtual ~IRayTraceable() = default;
 
-        [[nodiscard]] virtual bool Intersect(const Ray& ray, HitResult& hitResult, Range<float>& range) const = 0;
+        [[nodiscard]] virtual bool Intersect(const Ray& ray, HitResult& hitResult, Range<float> range) const = 0;
         [[nodiscard]] virtual IMaterial* GetMaterial() const = 0;
         [[nodiscard]] virtual bool HasFlippedNormals() const = 0;
         [[nodiscard]] virtual const AABB& BoundingBox() const = 0;

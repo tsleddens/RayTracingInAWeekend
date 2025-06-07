@@ -22,7 +22,7 @@ namespace tsleddens
 
         [[nodiscard]] float GetRadius() const { return m_radius; }
 
-        [[nodiscard]] bool Intersect(const Ray& ray, HitResult& hitResult, Range<float>& range) const override;
+        [[nodiscard]] bool Intersect(const Ray& ray, HitResult& hitResult, Range<float> range) const override;
 
         [[nodiscard]] bool HasFlippedNormals() const override { return m_flipNormals; }
 

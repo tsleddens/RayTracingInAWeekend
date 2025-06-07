@@ -9,6 +9,7 @@ set(INC_FILES
     ${PRIVATE_INC_FOLDER}/AABB.h
     ${PRIVATE_INC_FOLDER}/Aligned2DArray.h
     ${PRIVATE_INC_FOLDER}/BufferedGdiBitmap.h
+    ${PRIVATE_INC_FOLDER}/BvhNode.h
     ${PRIVATE_INC_FOLDER}/Camera.h
     ${PRIVATE_INC_FOLDER}/Defines.h
     ${PRIVATE_INC_FOLDER}/DeFocusDisk.h
@@ -30,6 +31,7 @@ set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)
 set(SRC_FILES 
     ${SRC_FOLDER}/AABB.cxx
     ${SRC_FOLDER}/BufferedGdiBitmap.cxx
+    ${SRC_FOLDER}/BvhNode.cxx
     ${SRC_FOLDER}/Camera.cxx
     ${SRC_FOLDER}/DeFocusDisk.cxx
     ${SRC_FOLDER}/Sphere.cxx

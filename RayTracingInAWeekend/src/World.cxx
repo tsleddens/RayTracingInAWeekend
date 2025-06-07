@@ -11,7 +11,7 @@ World::World() :
 
 }
 
-bool World::Intersect(const Ray& ray, HitResult& hitResult, Range<float>& range) const
+bool World::Intersect(const Ray& ray, HitResult& hitResult, Range<float> range) const
 {
     bool isHit = false;
     for (UINT i = 0; i < m_count; ++i)
