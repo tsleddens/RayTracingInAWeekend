@@ -5,6 +5,7 @@ project(RayTracingInAWeekend VERSION 1.0.0.0 LANGUAGES CXX)
 set(INTERFACE_INC_FOLDER ${PROJECT_SOURCE_DIR}/inc)
 set(PRIVATE_INC_FOLDER ${PROJECT_SOURCE_DIR}/inc/tsleddens)
 set(PRIVATE_MATERIALS_INC_FOLDER ${PRIVATE_INC_FOLDER}/Materials)
+set(PRIVATE_TEXTURES_INC_FOLDER ${PRIVATE_INC_FOLDER}/Textures)
 set(INC_FILES 
     ${PRIVATE_INC_FOLDER}/AABB.h
     ${PRIVATE_INC_FOLDER}/Aligned2DArray.h
@@ -20,11 +21,15 @@ set(INC_FILES
     ${PRIVATE_INC_FOLDER}/Sphere.h
     ${PRIVATE_INC_FOLDER}/Win32Rasterizer.h
     ${PRIVATE_INC_FOLDER}/World.h
-
+    
     ${PRIVATE_MATERIALS_INC_FOLDER}/Dielectric.h
     ${PRIVATE_MATERIALS_INC_FOLDER}/IMaterial.h
     ${PRIVATE_MATERIALS_INC_FOLDER}/Lambertian.h
     ${PRIVATE_MATERIALS_INC_FOLDER}/Metal.h
+    
+    ${PRIVATE_TEXTURES_INC_FOLDER}/ITexture.h
+    ${PRIVATE_TEXTURES_INC_FOLDER}/ColorTexture.h
+    ${PRIVATE_TEXTURES_INC_FOLDER}/CheckerTexture.h
 )
 
 set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)
@@ -39,7 +44,6 @@ set(SRC_FILES
     ${SRC_FOLDER}/World.cxx
 )
 
-
 add_library(${PROJECT_NAME} STATIC
     ${SRC_FILES}
     ${INC_FILES})
@@ -50,6 +54,9 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${PRIVATE_INC_FOLDER}
 )
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}\\inc\\tsleddens PREFIX "Header Files" FILES ${INC_FILES})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}\\src PREFIX "Source Files" FILES ${SRC_FILES})
 
 target_precompile_headers(${PROJECT_NAME}
     PUBLIC

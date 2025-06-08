@@ -1,21 +1,30 @@
 #pragma once
 
+#include <memory>
+
 #include "../HitResult.h"
+#include "../Textures/ColorTexture.h"
 #include "IMaterial.h"
 
 namespace tsleddens
 {
     class Lambertian : public IMaterial
     {
-        Color m_albedo;
+        std::shared_ptr<ITexture> m_texture;
 
     public:
-        Lambertian(const Color& albedo)
-            : m_albedo(albedo)
+        Lambertian(const Color& albedo) :
+            m_texture(std::make_shared<ColorTexture>(albedo))
         {
         }
 
-        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered) const override;
+        Lambertian(const std::shared_ptr<ITexture>& texture) :
+            m_texture(texture)
+        {
+        }
+
+        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation,
+                                   Ray& scattered) const override;
     };
 
     inline bool Lambertian::Scatter(const Ray&, const HitResult& hitResult, Color& attenuation, Ray& scattered) const
@@ -28,7 +37,7 @@ namespace tsleddens
         }
 
         scattered = Ray(hitResult.GetIntersection(), scatterDirection);
-        attenuation = m_albedo;
+        attenuation = m_texture->Value(hitResult.GetU(), hitResult.GetV(), hitResult.GetIntersection());
         return true;
     }
 }

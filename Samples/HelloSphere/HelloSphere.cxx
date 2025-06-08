@@ -6,6 +6,7 @@
 #include "tsleddens/Materials/Dielectric.h"
 #include "tsleddens/Materials/Lambertian.h"
 #include "tsleddens/Materials/Metal.h"
+#include "tsleddens/Textures/CheckerTexture.h"
 
 using namespace tsleddens;
 
@@ -13,7 +14,8 @@ HelloSphere::HelloSphere(int width, int height, const wchar_t* title):
     Win32Rasterizer(width, height, title),
     m_camera(Camera(width, height)),
     m_world(World()),
-    m_materialGround(std::make_unique<Lambertian>(Color(0.5f))),
+    m_checkerTexture(std::make_shared<CheckerTexture>(0.32f, Color(.2f, .3f, .1f), Color(.9f))),
+    m_materialGround(std::make_unique<Lambertian>(m_checkerTexture)),
     m_material1(std::make_unique<Dielectric>(1.5f)),
     m_material2(std::make_unique<Lambertian>(Color(0.4f, 0.2f, 0.1f))),
     m_material3(std::make_unique<Metal>(Color(0.7f, 0.6f, 0.5f), 0.0f))
