@@ -5,9 +5,9 @@
 int CALLBACK wWinMain(HINSTANCE, HINSTANCE, PWSTR, int nCmdShow)
 {
     auto console = spdlog::stdout_color_mt("console");
-    // const auto app = new HelloSphere(1024 / 2, 768 / 2, L"Test");
-    const auto app = new BouncingSpheres(1024 / 2, 768 / 2, L"Test");
-    return app->Run(nCmdShow);
+    // auto app = HelloSphere(1024 / 2, 768 / 2, L"Test");
+    auto app = BouncingSpheres(1024 / 2, 768 / 2, L"Test");
+    return app.Run(nCmdShow);
 }
 
 #if defined(_DEBUG)

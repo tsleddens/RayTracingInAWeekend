@@ -11,17 +11,18 @@
 using namespace tsleddens;
 
 HelloSphere::HelloSphere(int width, int height, const wchar_t* title):
-    Win32Rasterizer(width, height, title),
-    m_camera(Camera(width, height)),
-    m_world(World()),
+    AppBase(width, height, title),
     m_checkerTexture(std::make_shared<CheckerTexture>(0.32f, Color(.2f, .3f, .1f), Color(.9f))),
     m_materialGround(std::make_unique<Lambertian>(m_checkerTexture)),
     m_material1(std::make_unique<Dielectric>(1.5f)),
     m_material2(std::make_unique<Lambertian>(Color(0.4f, 0.2f, 0.1f))),
     m_material3(std::make_unique<Metal>(Color(0.7f, 0.6f, 0.5f), 0.0f))
 {
-    // m_camera.EnableRenderNormals();
+    GetCamera().SetDeFocusValues(10.0f, 0.6f);
+}
 
+void HelloSphere::InitWorld(tsleddens::World& world)
+{
     int offset = -11;
 
     for (int i = 0; i < 23; ++i)
@@ -49,47 +50,13 @@ HelloSphere::HelloSphere(int width, int height, const wchar_t* title):
                 {
                     m_materials[index] = std::make_unique<Dielectric>(1.5f);
                 }
-                m_world.AddObject<Sphere>(center, 0.2f, m_materials[index].get());
+                world.AddObject<Sphere>(center, 0.2f, m_materials[index].get());
             }
         }
     }
 
-    m_world.AddObject<Sphere>(Point3( 0.f, -1000.f, 0.f), 1000.f, m_materialGround.get());
-    m_world.AddObject<Sphere>(Point3(0.f, 1.f, 0.f), 1.f, m_material1.get());
-    m_world.AddObject<Sphere>(Point3(-4.f, 1.f, 0.f), 1.f, m_material2.get());
-    m_world.AddObject<Sphere>(Point3( 4.f, 1.f, 0.f), 1.f, m_material3.get());
-    m_camera.SetDeFocusValues(10.0f, 0.6f);
-
-    m_bvh = BvhNode(m_world, 0, m_world.GetObjectCount());
-}
-
-void HelloSphere::OnResize(UINT newWidth, UINT newHeight)
-{
-    m_camera.Resize(newWidth, newHeight);
-    m_frameCount = 0;
-}
-
-void HelloSphere::OnBeforeRender()
-{
-    m_camera.TraceAndPlot(m_bvh, *this);
-}
-
-void HelloSphere::OnAfterRender()
-{
-    UpdateFps();
-}
-
-void HelloSphere::UpdateFps()
-{
-    ++m_frameCount;
-    static ULONGLONG framesPassed = m_frameCount;
-    static ULONGLONG prevCount = GetTickCount();
-    if (GetTickCount64() - prevCount > 1000) // only update every second
-    {
-        static wchar_t buffer[256] = {};
-        (void)swprintf_s(buffer, L"FPS: %d, Samples: %llu", static_cast<int>(m_frameCount - framesPassed), m_frameCount);
-        SetWindowTitle(buffer);
-        framesPassed = m_frameCount;
-        prevCount = GetTickCount64();
-    }
+    world.AddObject<Sphere>(Point3(0.f, -1000.f, 0.f), 1000.f, m_materialGround.get());
+    world.AddObject<Sphere>(Point3(0.f, 1.f, 0.f), 1.f, m_material1.get());
+    world.AddObject<Sphere>(Point3(-4.f, 1.f, 0.f), 1.f, m_material2.get());
+    world.AddObject<Sphere>(Point3(4.f, 1.f, 0.f), 1.f, m_material3.get());
 }

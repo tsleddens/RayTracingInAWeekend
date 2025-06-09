@@ -1,10 +1,11 @@
 #pragma once
 #include "AABB.h"
 #include "Range.h"
+#include "Materials/IMaterial.h"
+
 
 namespace tsleddens
 {
-    struct IMaterial;
     class Ray;
     class HitResult;
 

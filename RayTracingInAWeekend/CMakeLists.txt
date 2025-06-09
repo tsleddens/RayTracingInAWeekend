@@ -8,6 +8,7 @@ set(PRIVATE_MATERIALS_INC_FOLDER ${PRIVATE_INC_FOLDER}/Materials)
 set(PRIVATE_TEXTURES_INC_FOLDER ${PRIVATE_INC_FOLDER}/Textures)
 set(INC_FILES 
     ${PRIVATE_INC_FOLDER}/AABB.h
+    ${PRIVATE_INC_FOLDER}/AppBase.h
     ${PRIVATE_INC_FOLDER}/Aligned2DArray.h
     ${PRIVATE_INC_FOLDER}/BufferedGdiBitmap.h
     ${PRIVATE_INC_FOLDER}/BvhNode.h
@@ -35,6 +36,7 @@ set(INC_FILES
 set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)
 set(SRC_FILES 
     ${SRC_FOLDER}/AABB.cxx
+    ${SRC_FOLDER}/AppBase.cxx
     ${SRC_FOLDER}/BufferedGdiBitmap.cxx
     ${SRC_FOLDER}/BvhNode.cxx
     ${SRC_FOLDER}/Camera.cxx
