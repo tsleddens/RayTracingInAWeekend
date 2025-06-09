@@ -25,9 +25,9 @@ namespace tsleddens
         Vector3 m_uDelta = Vector3(0.f);
         Vector3 m_vDelta = Vector3(0.f);
 
-        Vector3 m_lookAt = Vector3(0.f);
         Vector3 m_upDirection = Vector3(0.f, 1.f, 0.f);
 
+        Point3 m_lookAt = Vector3(0.f);
         Point3 m_position = Point3(13.f, 2.f, 3.f);
         Point3 m_p0 = Point3(0.f);
 
@@ -47,6 +47,18 @@ namespace tsleddens
         void SetDeFocusValues(const float distance, const float angle) {
             m_deFocusDisk.SetDistance(distance);
             m_deFocusDisk.SetAngle(angle);
+            UpdateViewport();
+        }
+
+        void SetLookAt(const Point3& lookAt)
+        {
+            m_lookAt = lookAt;
+            UpdateViewport();
+        }
+
+        void SetPosition(const Point3& position)
+        {
+            m_position = position;
             UpdateViewport();
         }
 

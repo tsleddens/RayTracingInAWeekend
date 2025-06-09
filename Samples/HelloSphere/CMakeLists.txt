@@ -2,12 +2,14 @@ include_guard()
 
 project(HelloSphere VERSION 1.0.0.0 LANGUAGES CXX)
 
-set(INC_FILES 
-    "main.cxx"
+set(SRC_FILES
+    "BouncingSpheres.cxx"
     "HelloSphere.cxx"
+    "main.cxx"
 )
 
-set(SRC_FILES
+set(INC_FILES
+    "BouncingSpheres.h"
     "HelloSphere.h"
 )
 
