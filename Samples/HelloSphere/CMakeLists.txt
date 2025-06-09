@@ -2,14 +2,15 @@ include_guard()
 
 project(HelloSphere VERSION 1.0.0.0 LANGUAGES CXX)
 
+set(ASSETS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/assets")
+
 set(SRC_FILES
-    "BouncingSpheres.cxx"
-    "HelloSphere.cxx"
     "main.cxx"
 )
 
 set(INC_FILES
     "BouncingSpheres.h"
+    "Earth.h"
     "HelloSphere.h"
 )
 
@@ -34,4 +35,10 @@ target_link_libraries(${PROJECT_NAME}
         RayTracingInAWeekend
     PRIVATE
         glm::glm
+)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${ASSETS_DIR}"
+    "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
 )

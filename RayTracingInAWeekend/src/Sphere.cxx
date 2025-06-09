@@ -33,8 +33,12 @@ bool Sphere::Intersect(const Ray& ray, HitResult& hitResult, Range<float> range)
         if (t > FLT_MIN && range.IsInRange(t, false))
         {
             hitResult.SetDistance(t, ray);
-            hitResult.SetFaceNormal(ray, glm::normalize(hitResult.GetIntersection() - m_position), m_flipNormals);
+
+            Vector3 outwardNormal = glm::normalize(hitResult.GetIntersection() - m_position);
+            hitResult.SetFaceNormal(ray, outwardNormal, m_flipNormals);
             hitResult.SetMaterial(this->GetMaterial());
+
+            GetSphereUV(outwardNormal, hitResult.u, hitResult.v);
             return true;
         }
     }

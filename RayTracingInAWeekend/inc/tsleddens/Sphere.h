@@ -27,5 +27,14 @@ namespace tsleddens
         [[nodiscard]] bool HasFlippedNormals() const override { return m_flipNormals; }
 
         [[nodiscard]] const AABB& BoundingBox() const override { return m_boundingBox; }
+
+        static void GetSphereUV(const Point3& p, float& u, float& v)
+        {
+            float theta = std::acos(-p.y);
+            float phi = std::atan2(-p.z, p.x) + glm::pi<float>();
+
+            u = phi / (2.f * glm::pi<float>());
+            v = theta / glm::pi<float>();
+        }
     };
 }

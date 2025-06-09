@@ -37,7 +37,7 @@ namespace tsleddens
         }
 
         scattered = Ray(hitResult.GetIntersection(), scatterDirection);
-        attenuation = m_texture->Value(hitResult.GetU(), hitResult.GetV(), hitResult.GetIntersection());
+        attenuation = m_texture->Value(hitResult.u, hitResult.v, hitResult.GetIntersection());
         return true;
     }
 }

@@ -8,6 +8,7 @@ project (RayTracingInAWeekend VERSION 1.0.0.0 LANGUAGES CXX)
 
 find_package(spdlog CONFIG REQUIRED) #vcpkg install spdlog
 find_package(glm CONFIG REQUIRED) #vcpkg install glm
+find_package(Stb CONFIG REQUIRED)
 
 add_subdirectory(RayTracingInAWeekend)
 add_subdirectory(Samples)

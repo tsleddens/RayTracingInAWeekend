@@ -19,6 +19,7 @@ set(INC_FILES
     ${PRIVATE_INC_FOLDER}/IRayTraceable.h
     ${PRIVATE_INC_FOLDER}/Range.h
     ${PRIVATE_INC_FOLDER}/Ray.h
+    ${PRIVATE_INC_FOLDER}/RtwImage.h
     ${PRIVATE_INC_FOLDER}/Sphere.h
     ${PRIVATE_INC_FOLDER}/Win32Rasterizer.h
     ${PRIVATE_INC_FOLDER}/World.h
@@ -31,6 +32,7 @@ set(INC_FILES
     ${PRIVATE_TEXTURES_INC_FOLDER}/ITexture.h
     ${PRIVATE_TEXTURES_INC_FOLDER}/ColorTexture.h
     ${PRIVATE_TEXTURES_INC_FOLDER}/CheckerTexture.h
+    ${PRIVATE_TEXTURES_INC_FOLDER}/ImageTexture.h
 )
 
 set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)
@@ -55,6 +57,7 @@ target_include_directories(${PROJECT_NAME}
         ${INTERFACE_INC_FOLDER}
     PRIVATE
         ${PRIVATE_INC_FOLDER}
+        ${Stb_INCLUDE_DIR}
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}\\inc\\tsleddens PREFIX "Header Files" FILES ${INC_FILES})

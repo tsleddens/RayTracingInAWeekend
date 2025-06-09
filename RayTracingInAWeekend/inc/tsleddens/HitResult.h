@@ -14,14 +14,13 @@ namespace tsleddens
         Point3 m_intersection = {};
         bool m_frontFace = false;
         float m_distance = FLT_MAX;
-        float m_u, m_v;
 
     public:
+        float u, v;
+
         [[nodiscard]] const Point3& GetIntersection() const { return m_intersection; }
         [[nodiscard]] const Vector3& GetNormal() const { return m_normal; }
         [[nodiscard]] float GetDistance() const { return m_distance; }
-        [[nodiscard]] float GetU() const { return m_u; }
-        [[nodiscard]] float GetV() const { return m_v; }
         [[nodiscard]] bool IsFrontFace() const { return m_frontFace; }
         [[nodiscard]] IMaterial* GetMaterial() const { return m_pMaterial; }
 
