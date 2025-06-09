@@ -17,6 +17,7 @@ set(INC_FILES
     ${PRIVATE_INC_FOLDER}/DeFocusDisk.h
     ${PRIVATE_INC_FOLDER}/HitResult.h
     ${PRIVATE_INC_FOLDER}/IRayTraceable.h
+    ${PRIVATE_INC_FOLDER}/Perlin.h
     ${PRIVATE_INC_FOLDER}/Range.h
     ${PRIVATE_INC_FOLDER}/Ray.h
     ${PRIVATE_INC_FOLDER}/RtwImage.h
@@ -33,6 +34,7 @@ set(INC_FILES
     ${PRIVATE_TEXTURES_INC_FOLDER}/ColorTexture.h
     ${PRIVATE_TEXTURES_INC_FOLDER}/CheckerTexture.h
     ${PRIVATE_TEXTURES_INC_FOLDER}/ImageTexture.h
+    ${PRIVATE_TEXTURES_INC_FOLDER}/NoiseTexture.h
 )
 
 set(SRC_FOLDER ${PROJECT_SOURCE_DIR}/src)

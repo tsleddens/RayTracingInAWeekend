@@ -12,6 +12,7 @@ set(INC_FILES
     "BouncingSpheres.h"
     "Earth.h"
     "HelloSphere.h"
+    "PerlinSpheres.h"
 )
 
 add_executable (${PROJECT_NAME} ${SRC_FILES} ${INC_FILES})
