@@ -4,7 +4,6 @@
 #include "tsleddens/Sphere.h"
 #include "tsleddens/World.h"
 #include "tsleddens/Materials/Lambertian.h"
-#include "tsleddens/Textures/ImageTexture.h"
 #include "tsleddens/Textures/ITexture.h"
 #include "tsleddens/Textures/NoiseTexture.h"
 
@@ -19,7 +18,7 @@ public:
 
     PerlinSpheres(int width, int height, const wchar_t* title) :
         AppBase(width, height, title),
-        m_noiseTexture(std::make_shared<NoiseTexture>()),
+        m_noiseTexture(std::make_shared<NoiseTexture>(4.f)),
         m_noiseMaterial(std::make_unique<Lambertian>(m_noiseTexture))
     {
     }

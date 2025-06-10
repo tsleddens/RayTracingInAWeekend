@@ -8,12 +8,17 @@ namespace tsleddens
     {
         Perlin m_perlin{};
 
+        float m_scale;
+
     public:
-        NoiseTexture() = default;
+        NoiseTexture(float scale = 1.f) :
+            m_scale(scale)
+        {
+        }
 
         Color Value(float u, float v, const Point3& p) const override
         {
-            return Color(1.f) * m_perlin.Noise(p);
+            return Color(1.f) * m_perlin.Noise(m_scale * p);
         }
     };
 }
