@@ -25,9 +25,12 @@ namespace tsleddens
 
         float Noise(const Point3& p) const
         {
-            const float u = p.x - std::floor(p.x);
-            const float v = p.y - std::floor(p.y);
-            const float w = p.z - std::floor(p.z);
+            float u = p.x - std::floor(p.x);
+            float v = p.y - std::floor(p.y);
+            float w = p.z - std::floor(p.z);
+            u = u * u * (3.f - 2.f * u);
+            v = v * v * (3.f - 2.f * v);
+            w = w * w * (3.f - 2.f * w);
 
             const int i = static_cast<int>(std::floor(p.x));
             const int j = static_cast<int>(std::floor(p.y));
