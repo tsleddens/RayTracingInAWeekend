@@ -14,6 +14,7 @@ set(INC_FILES
     "HelloSphere.h"
     "PerlinSpheres.h"
     "Quads.h"
+    "SimpleLight.h"
 )
 
 add_executable (${PROJECT_NAME} ${SRC_FILES} ${INC_FILES})

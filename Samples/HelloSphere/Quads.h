@@ -35,6 +35,7 @@ protected:
         camera->SetLookAt(Point3(0.f));
         camera->SetPosition(Point3(0.f, 0.f, 9.f));
         camera->SetVerticalFieldOfView(80.f);
+        camera->SetBackgroundColor(.7f, .8f, 1.f);
 
         world.AddObject<Quad>(Point3(-3.f, -2.f, 5.f), Vector3(0.f, 0.f, -4.f), Vector3(0.f, 4.f,  0.f), m_leftRed.get());
         world.AddObject<Quad>(Point3(-2.f, -2.f, 0.f), Vector3(4.f, 0.f,  0.f), Vector3(0.f, 4.f,  0.f), m_backGreen.get());

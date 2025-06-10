@@ -8,6 +8,15 @@ namespace tsleddens
     struct IMaterial
     {
         virtual ~IMaterial() = default;
-        virtual [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered) const = 0;
+
+        virtual [[nodiscard]] bool Scatter(const Ray&, const HitResult&, Color&, Ray&) const
+        {
+            return false;
+        }
+
+        virtual [[nodiscard]] Color Emitted(float, float, const Point3&) const
+        {
+            return Color(0.f);
+        }
     };
 }

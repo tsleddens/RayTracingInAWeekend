@@ -37,9 +37,9 @@ inline float LinearToGamma(float linear)
 
 inline ColorCode ColorToColorCode(const Color& color)
 {
-    const auto r = static_cast<ColorCode>(LinearToGamma(color.x) * 255.999f) & 0xff;
-    const auto g = static_cast<ColorCode>(LinearToGamma(color.y) * 255.999f) & 0xff;
-    const auto b = static_cast<ColorCode>(LinearToGamma(color.z) * 255.999f) & 0xff;
+    const auto r = static_cast<ColorCode>(LinearToGamma(std::clamp(color.x, 0.f, 1.f)) * 255.999f) & 0xff;
+    const auto g = static_cast<ColorCode>(LinearToGamma(std::clamp(color.y, 0.f, 1.f)) * 255.999f) & 0xff;
+    const auto b = static_cast<ColorCode>(LinearToGamma(std::clamp(color.z, 0.f, 1.f)) * 255.999f) & 0xff;
     return (r << 16) + (g << 8) + b;
 }
 

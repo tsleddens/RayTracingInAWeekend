@@ -25,6 +25,7 @@ public:
         m_material3(std::make_unique<tsleddens::Metal>(Color(0.7f, 0.6f, 0.5f), 0.0f))
     {
         GetCamera()->SetDeFocusValues(10.0f, 0.6f);
+        GetCamera()->SetBackgroundColor(.7f, .8f, 1.f);
     }
 
     ~HelloSphere() override = default;

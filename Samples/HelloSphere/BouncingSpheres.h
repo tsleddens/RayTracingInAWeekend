@@ -29,5 +29,7 @@ protected:
     {
         world.AddObject<tsleddens::Sphere>(Point3(0.f, -10.f, 0.f), 10.f, m_materialGround.get());
         world.AddObject<tsleddens::Sphere>(Point3(0.f, 10.f, 0.f), 10.f, m_materialGround.get());
+
+        GetCamera()->SetBackgroundColor(.7f, .8f, 1.f);
     }
 };
