@@ -13,13 +13,23 @@ namespace tsleddens
         std::shared_ptr<ITexture> m_texture;
 
     public:
+        Lambertian(const std::shared_ptr<ITexture>& texture) :
+            m_texture(texture)
+        {
+        }
+
         Lambertian(const Color& albedo) :
             m_texture(std::make_shared<ColorTexture>(albedo))
         {
         }
 
-        Lambertian(const std::shared_ptr<ITexture>& texture) :
-            m_texture(texture)
+        Lambertian(const float r, const float g, const float b) :
+            Lambertian(std::make_shared<ColorTexture>(Color(r, g, b)))
+        {
+        }
+
+        Lambertian(const float rgb) :
+            Lambertian(std::make_shared<ColorTexture>(Color(rgb)))
         {
         }
 
