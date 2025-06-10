@@ -10,6 +10,7 @@ set(SRC_FILES
 
 set(INC_FILES
     "BouncingSpheres.h"
+    "CornellBox.h"
     "Earth.h"
     "HelloSphere.h"
     "PerlinSpheres.h"
