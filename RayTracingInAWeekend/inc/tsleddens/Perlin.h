@@ -53,6 +53,22 @@ namespace tsleddens
             return TrilinearInterpolation(c, u, v, w);
         }
 
+        float Turbulence(const Point3& p, const int depth) const
+        {
+            float accumulation = 0.f;
+            Point3 tmpP = p;
+            float weight = 1.f;
+
+            for (int i = 0; i < depth; ++i)
+            {
+                accumulation += weight * Noise(tmpP);
+                weight *= 0.5f;
+                tmpP *= 2.f;
+            }
+
+            return std::fabs(accumulation);
+        }
+
     private:
         static void GeneratePermute(int* p)
         {

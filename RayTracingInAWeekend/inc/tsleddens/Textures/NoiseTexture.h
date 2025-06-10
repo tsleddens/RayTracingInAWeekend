@@ -18,7 +18,7 @@ namespace tsleddens
 
         Color Value(float u, float v, const Point3& p) const override
         {
-            return Color(1.f) * 0.5f * (1.f + m_perlin.Noise(m_scale * p));
+            return Color(1.f) * m_perlin.Turbulence(p, 7.f);
         }
     };
 }
