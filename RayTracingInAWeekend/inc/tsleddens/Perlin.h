@@ -5,7 +5,7 @@ namespace tsleddens
     class Perlin
     {
         static constexpr int s_pointCount = 256;
-        float m_randomFloats[s_pointCount];
+        Vector3 m_randomVectors[s_pointCount];
         int m_permuteX[s_pointCount];
         int m_permuteY[s_pointCount];
         int m_permuteZ[s_pointCount];
@@ -13,9 +13,9 @@ namespace tsleddens
     public:
         Perlin()
         {
-            for (float& m_randomFloat : m_randomFloats)
+            for (Vector3& randomVector : m_randomVectors)
             {
-                m_randomFloat = RandomFloat();
+                randomVector = RandomVector3(-1, 1);
             }
 
             GeneratePermute(m_permuteX);
@@ -28,15 +28,12 @@ namespace tsleddens
             float u = p.x - std::floor(p.x);
             float v = p.y - std::floor(p.y);
             float w = p.z - std::floor(p.z);
-            u = u * u * (3.f - 2.f * u);
-            v = v * v * (3.f - 2.f * v);
-            w = w * w * (3.f - 2.f * w);
 
             const int i = static_cast<int>(std::floor(p.x));
             const int j = static_cast<int>(std::floor(p.y));
             const int k = static_cast<int>(std::floor(p.z));
 
-            float c[2][2][2];
+            Vector3 c[2][2][2];
 
             for (int di = 0; di < 2; ++di)
             {
@@ -44,7 +41,7 @@ namespace tsleddens
                 {
                     for (int dk = 0; dk < 2; ++dk)
                     {
-                        c[di][dj][dk] = m_randomFloats[
+                        c[di][dj][dk] = m_randomVectors[
                             m_permuteX[(i + di) & 255] ^
                             m_permuteY[(j + dj) & 255] ^
                             m_permuteZ[(k + dk) & 255]
@@ -78,8 +75,12 @@ namespace tsleddens
             }
         }
 
-        static float TrilinearInterpolation(float c[2][2][2], const float u, const float v, const float w)
+        static float TrilinearInterpolation(const Vector3 c[2][2][2], const float u, const float v, const float w)
         {
+            const float uu = u * u * (3.f - 2.f * u);
+            const float vv = v * v * (3.f - 2.f * v);
+            const float ww = w * w * (3.f - 2.f * w);
+
             float accumulation = 0.f;
             for (int i = 0; i < 2; i++)
             {
@@ -90,11 +91,12 @@ namespace tsleddens
                         const float fI = static_cast<float>(i);
                         const float fJ = static_cast<float>(j);
                         const float fK = static_cast<float>(k);
+                        const Vector3 weightV(u - fI, v - fJ, w - fK);
                         accumulation +=
-                              (fI * u + (1.f - fI) * (1.f - u))
-                            * (fJ * v + (1.f - fJ) * (1.f - v))
-                            * (fK * w + (1.f - fK) * (1.f - w))
-                            * c[i][j][k];
+                              (fI * uu + (1.f - fI) * (1.f - uu))
+                            * (fJ * vv + (1.f - fJ) * (1.f - vv))
+                            * (fK * ww + (1.f - fK) * (1.f - ww))
+                            * glm::dot(c[i][j][k], weightV);
                     }
                 }
             }
