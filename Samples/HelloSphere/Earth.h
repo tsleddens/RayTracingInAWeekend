@@ -30,8 +30,8 @@ protected:
     void InitWorld(World& world) override
     {
         auto camera = GetCamera();
-        camera.SetLookAt(Point3(0.f));
-        camera.SetPosition(Point3(0.f, 0.f, 12.f));
+        camera->SetLookAt(Point3(0.f));
+        camera->SetPosition(Point3(0.f, 0.f, 12.f));
 
         world.AddObject<Sphere>(Point3(0.f), 2.f, m_earthMaterial.get());
     }

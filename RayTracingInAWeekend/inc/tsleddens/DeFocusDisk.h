@@ -11,7 +11,7 @@ namespace tsleddens
         Point3 m_v;
 
     public:
-        DeFocusDisk(const float angle = 0.f, const float distance = 1.f);
+        DeFocusDisk(const float angle = 0.f, const float distance = 10.f);
 
         void SetAngle(const float angle) { m_angle = angle; }
         void SetDistance(const float distance) { m_distance = distance; }

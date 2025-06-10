@@ -30,10 +30,17 @@ namespace tsleddens
         [[nodiscard]] const T& GetMin() const { return m_min; }
         [[nodiscard]] const T& GetMax() const { return m_max; }
 
-        T Length() const { return m_max - m_min; }
+        [[nodiscard]] T Length() const { return m_max - m_min; }
 
         void SetMin(const T& min) { m_min = min; }
         void SetMax(const T& max) { m_max = max; }
+
+        static void Expand(Range<T>& toExpand, T delta)
+        {
+            float padding = delta * 0.5f;
+            toExpand.m_min -= padding;
+            toExpand.m_max += padding;
+        }
 
         [[nodiscard]] bool IsInRange(const T& value, bool inclusive = true) const
         {

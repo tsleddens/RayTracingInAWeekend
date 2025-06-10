@@ -18,6 +18,7 @@ namespace tsleddens
             m_y(y),
             m_z(z)
         {
+            PadToMinimums();
         }
 
         AABB(const AABB& a, const AABB& b) :
@@ -32,6 +33,8 @@ namespace tsleddens
             m_x = (a.x <= b.x) ? Range<float>(a.x, b.x) : Range<float>(b.x, a.x);
             m_y = (a.y <= b.y) ? Range<float>(a.y, b.y) : Range<float>(b.y, a.y);
             m_z = (a.z <= b.z) ? Range<float>(a.z, b.z) : Range<float>(b.z, a.z);
+
+            PadToMinimums();
         }
 
         const Range<float>& AxisRange(EAxis n) const
@@ -58,5 +61,14 @@ namespace tsleddens
         [[nodiscard]] const Range<float>& GetXRange() const { return m_x; }
         [[nodiscard]] const Range<float>& GetYRange() const { return m_y; }
         [[nodiscard]] const Range<float>& GetZRange() const { return m_z; }
+    private:
+        void PadToMinimums()
+        {
+            float delta = .0001f;
+
+            if (m_x.Length() < delta) Range<float>::Expand(m_x, delta);
+            if (m_y.Length() < delta) Range<float>::Expand(m_y, delta);
+            if (m_z.Length() < delta) Range<float>::Expand(m_z, delta);
+        }
     };
 }

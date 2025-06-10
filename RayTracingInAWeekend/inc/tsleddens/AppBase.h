@@ -21,8 +21,8 @@ namespace tsleddens
         }
         ~AppBase() override = default;
 
-        World& GetWorld() { return m_world; }
-        Camera& GetCamera() { return m_camera; }
+        World* GetWorld() { return &m_world; }
+        Camera* GetCamera() { return &m_camera; }
 
         virtual void InitWorld(World& world) = 0;
 

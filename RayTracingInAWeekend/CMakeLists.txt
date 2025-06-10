@@ -18,6 +18,7 @@ set(INC_FILES
     ${PRIVATE_INC_FOLDER}/HitResult.h
     ${PRIVATE_INC_FOLDER}/IRayTraceable.h
     ${PRIVATE_INC_FOLDER}/Perlin.h
+    ${PRIVATE_INC_FOLDER}/Quad.h
     ${PRIVATE_INC_FOLDER}/Range.h
     ${PRIVATE_INC_FOLDER}/Ray.h
     ${PRIVATE_INC_FOLDER}/RtwImage.h
@@ -45,6 +46,7 @@ set(SRC_FILES
     ${SRC_FOLDER}/BvhNode.cxx
     ${SRC_FOLDER}/Camera.cxx
     ${SRC_FOLDER}/DeFocusDisk.cxx
+    ${SRC_FOLDER}/Quad.cxx
     ${SRC_FOLDER}/Sphere.cxx
     ${SRC_FOLDER}/Win32Rasterizer.cxx
     ${SRC_FOLDER}/World.cxx
