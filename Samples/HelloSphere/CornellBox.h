@@ -1,6 +1,8 @@
 #pragma once
 #include "tsleddens/AppBase.h"
 #include "tsleddens/Quad.h"
+#include "tsleddens/RotateY.h"
+#include "tsleddens/Translate.h"
 #include "tsleddens/Materials/DiffuseLight.h"
 #include "tsleddens/Materials/Lambertian.h"
 #include "tsleddens/Textures/ImageTexture.h"
@@ -42,5 +44,15 @@ protected:
         world.AddObject<Quad>(Point3(0.f), Vector3(555.f, 0.f, 0.f), Vector3(0.f, 0.f, 555.f), m_white.get());
         world.AddObject<Quad>(Point3(555.f), Vector3(-555.f, 0.f, 0.f), Vector3(0.f, 0.f, -555.f), m_white.get());
         world.AddObject<Quad>(Point3(0.f, 0.f, 554.9999f), Vector3(555.f, 0.f, 0.f), Vector3(0.f, 555.f, 0.f), m_white.get());
+
+        std::shared_ptr<IRayTraceable> box1 = std::make_shared<Box>(Point3(0.f), Point3(165.f, 330.f, 165.f), m_white.get());
+        box1 = std::make_shared<RotateY>(box1, 15.f);
+        box1 = std::make_shared<Translate>(box1, Point3(265.f, 0.f, 295.f));
+        world.AddObject(box1);
+
+        std::shared_ptr<IRayTraceable> box2 = std::make_shared<Box>(Point3(0.f), Point3(165.f), m_white.get());
+        box2 = std::make_shared<RotateY>(box2, -18.f);
+        box2 = std::make_shared<Translate>(box2, Point3(130.f, 0.f, 65.f));
+        world.AddObject(box2);
     }
 };

@@ -61,6 +61,12 @@ namespace tsleddens
         [[nodiscard]] const Range<float>& GetXRange() const { return m_x; }
         [[nodiscard]] const Range<float>& GetYRange() const { return m_y; }
         [[nodiscard]] const Range<float>& GetZRange() const { return m_z; }
+
+        AABB operator+(const Vector3& offset) const
+        {
+            return AABB(m_x + offset.x, m_y + offset.y, m_z + offset.z);
+        }
+
     private:
         void PadToMinimums()
         {

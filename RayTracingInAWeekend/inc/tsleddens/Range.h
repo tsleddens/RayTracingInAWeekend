@@ -35,6 +35,11 @@ namespace tsleddens
         void SetMin(const T& min) { m_min = min; }
         void SetMax(const T& max) { m_max = max; }
 
+        Range<float> operator+(float displacement) const
+        {
+            return Range(m_min + displacement, m_max + displacement);
+        }
+
         static void Expand(Range<T>& toExpand, T delta)
         {
             float padding = delta * 0.5f;

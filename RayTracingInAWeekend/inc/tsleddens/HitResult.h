@@ -27,6 +27,10 @@ namespace tsleddens
         void SetMaterial(IMaterial* material) { m_pMaterial = material; }
         void SetFaceNormal(const Ray& ray, const Vector3& outwardNormal, bool flipped);
         void SetDistance(float distance, const Ray& ray);
+        void OffsetIntersection(const Vector3& offset) { m_intersection += offset; }
+
+        void SetIntersection(const Vector3& intersection) { m_intersection = intersection; }
+        void SetFaceNormal(const Vector3& faceNormal) { m_normal = faceNormal; }
     };
 
     inline void HitResult::SetFaceNormal(const Ray& ray, const Vector3& outwardNormal, bool flipped)
