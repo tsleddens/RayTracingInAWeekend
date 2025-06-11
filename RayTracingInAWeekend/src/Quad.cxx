@@ -20,7 +20,7 @@ bool Quad::Intersect(const Ray& ray, HitResult& hitResult, Range<float> range) c
 
             if (float beta = glm::dot(m_w, glm::cross(m_u, planarHitpoint)); IsInterior(alpha, beta, hitResult))
             {
-                hitResult.SetDistance(t, ray);
+                hitResult.SetIntersectionAndDistance(t, ray);
                 hitResult.SetFaceNormal(ray, m_normal, false);
                 hitResult.SetMaterial(this->GetMaterial());
                 return true;

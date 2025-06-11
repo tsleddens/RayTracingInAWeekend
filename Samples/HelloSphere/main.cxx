@@ -1,5 +1,6 @@
 #include "BouncingSpheres.h"
 #include "CornellBox.h"
+#include "CornellSmoke.h"
 #include "Earth.h"
 #include "HelloSphere.h"
 #include "PerlinSpheres.h"
@@ -17,7 +18,8 @@ int CALLBACK wWinMain(HINSTANCE, HINSTANCE, PWSTR, int nCmdShow)
     // auto app = PerlinSpheres(1024 / 2, 768 / 2, L"Test");
     // auto app = Quads(1024 / 2, 768 / 2, L"Test");
     // auto app = SimpleLight(1024 / 2, 768 / 2, L"Test");
-    auto app = CornellBox(1024 / 2, 768 / 2, L"Test");
+    // auto app = CornellBox(1024 / 2, 768 / 2, L"Test");
+    auto app = CornellSmoke(1024 / 2, 768 / 2, L"Test");
     return app.Run(nCmdShow);
 }
 

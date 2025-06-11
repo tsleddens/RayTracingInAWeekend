@@ -26,11 +26,17 @@ namespace tsleddens
 
         void SetMaterial(IMaterial* material) { m_pMaterial = material; }
         void SetFaceNormal(const Ray& ray, const Vector3& outwardNormal, bool flipped);
-        void SetDistance(float distance, const Ray& ray);
+        void SetIntersectionAndDistance(float distance, const Ray& ray);
+        void SetIntersection(float distance)
+        {
+            m_distance = distance;
+        }
+
         void OffsetIntersection(const Vector3& offset) { m_intersection += offset; }
 
         void SetIntersection(const Vector3& intersection) { m_intersection = intersection; }
         void SetFaceNormal(const Vector3& faceNormal) { m_normal = faceNormal; }
+        void SetFrontFace(bool isFrontFace) { m_frontFace = isFrontFace; }
     };
 
     inline void HitResult::SetFaceNormal(const Ray& ray, const Vector3& outwardNormal, bool flipped)
@@ -40,7 +46,7 @@ namespace tsleddens
         m_normal = m_frontFace ? outwardNormal : -outwardNormal;
     }
 
-    inline void HitResult::SetDistance(float distance, const Ray& ray)
+    inline void HitResult::SetIntersectionAndDistance(float distance, const Ray& ray)
     {
         m_distance = distance;
         m_intersection = ray.At(distance);

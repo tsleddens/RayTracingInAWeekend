@@ -13,6 +13,7 @@ set(INC_FILES
     ${PRIVATE_INC_FOLDER}/BufferedGdiBitmap.h
     ${PRIVATE_INC_FOLDER}/BvhNode.h
     ${PRIVATE_INC_FOLDER}/Camera.h
+    ${PRIVATE_INC_FOLDER}/ConstantMedium.h
     ${PRIVATE_INC_FOLDER}/Defines.h
     ${PRIVATE_INC_FOLDER}/DeFocusDisk.h
     ${PRIVATE_INC_FOLDER}/HitResult.h
@@ -31,6 +32,7 @@ set(INC_FILES
     ${PRIVATE_MATERIALS_INC_FOLDER}/Dielectric.h
     ${PRIVATE_MATERIALS_INC_FOLDER}/DiffuseLight.h
     ${PRIVATE_MATERIALS_INC_FOLDER}/IMaterial.h
+    ${PRIVATE_MATERIALS_INC_FOLDER}/Isotropic.h
     ${PRIVATE_MATERIALS_INC_FOLDER}/Lambertian.h
     ${PRIVATE_MATERIALS_INC_FOLDER}/Metal.h
     
