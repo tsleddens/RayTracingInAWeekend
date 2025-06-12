@@ -38,12 +38,12 @@ protected:
         camera->SetLookAt(278.f, 278.f, 0.f);
         camera->SetVerticalFieldOfView(40.f);
 
-        world.AddObject<Quad>(Point3(555.f, 0.f, 5.f), Vector3(0.f, 555.f, 0.f), Vector3(0.f, 0.f, 555.f), m_green.get());
+        world.AddObject<Quad>(Point3(555.f, 0.f, 0.f), Vector3(0.f, 555.f, 0.f), Vector3(0.f, 0.f, 555.f), m_green.get());
         world.AddObject<Quad>(Point3(0.f), Vector3(0.f, 555.f, 0.f), Vector3(0.f, 0.f, 555.f), m_red.get());
         world.AddObject<Quad>(Point3(343.f, 554.f, 332.f), Vector3(-130.f, 0.f, 0.f), Vector3(0.f, 0.f, -105.f), m_light.get());
         world.AddObject<Quad>(Point3(0.f), Vector3(555.f, 0.f, 0.f), Vector3(0.f, 0.f, 555.f), m_white.get());
         world.AddObject<Quad>(Point3(555.f), Vector3(-555.f, 0.f, 0.f), Vector3(0.f, 0.f, -555.f), m_white.get());
-        world.AddObject<Quad>(Point3(0.f, 0.f, 554.9999f), Vector3(555.f, 0.f, 0.f), Vector3(0.f, 555.f, 0.f), m_white.get());
+        world.AddObject<Quad>(Point3(0.f, 0.f, 555.f), Vector3(555.f, 0.f, 0.f), Vector3(0.f, 555.f, 0.f), m_white.get());
 
         std::shared_ptr<IRayTraceable> box1 = std::make_shared<Box>(Point3(0.f), Point3(165.f, 330.f, 165.f), m_white.get());
         box1 = std::make_shared<RotateY>(box1, 15.f);
