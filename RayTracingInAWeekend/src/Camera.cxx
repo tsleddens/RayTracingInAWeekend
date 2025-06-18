@@ -33,7 +33,7 @@ void Camera::Resize(UINT imageWidth, UINT imageHeight)
     m_deFocusDisk.GenerateDisk(u, v);
 
     const Vector3 horizontal = viewportWidth * u;
-    const Vector3 vertical = viewportHeight * v;
+    const Vector3 vertical = viewportHeight * -v;
 
     m_uDelta = horizontal / static_cast<float>(imageWidth);
     m_vDelta = vertical / static_cast<float>(imageHeight);

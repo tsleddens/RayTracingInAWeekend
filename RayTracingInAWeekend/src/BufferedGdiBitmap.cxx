@@ -39,7 +39,7 @@ void BufferedGdiBitmap::Resize(UINT width, UINT height)
     BITMAPINFO bmi = {};
     bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     bmi.bmiHeader.biWidth = static_cast<long>(width);
-    bmi.bmiHeader.biHeight = static_cast<long>(height);
+    bmi.bmiHeader.biHeight = -static_cast<long>(height);
     bmi.bmiHeader.biPlanes = 1;
     bmi.bmiHeader.biBitCount = 32;
     bmi.bmiHeader.biCompression = BI_RGB;
