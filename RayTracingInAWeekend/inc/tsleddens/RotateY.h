@@ -69,14 +69,14 @@ namespace tsleddens
             if (isHit)
             {
                 hitResult.SetIntersection(Point3(
-                    (m_cosTheta * hitResult.GetIntersection().x) - (m_sinTheta * hitResult.GetIntersection().z),
+                    (m_cosTheta * hitResult.GetIntersection().x) + (m_sinTheta * hitResult.GetIntersection().z),
                     hitResult.GetIntersection().y,
-                    (m_sinTheta * hitResult.GetIntersection().x) + (m_cosTheta * hitResult.GetIntersection().z)));
+                    (-m_sinTheta * hitResult.GetIntersection().x) + (m_cosTheta * hitResult.GetIntersection().z)));
 
                 hitResult.SetFaceNormal(Point3(
-                    (m_cosTheta * hitResult.GetNormal().x) - (m_sinTheta * hitResult.GetNormal().z),
+                    (m_cosTheta * hitResult.GetNormal().x) + (m_sinTheta * hitResult.GetNormal().z),
                     hitResult.GetNormal().y,
-                    (m_sinTheta * hitResult.GetNormal().x) + (m_cosTheta * hitResult.GetNormal().z)));
+                    (-m_sinTheta * hitResult.GetNormal().x) + (m_cosTheta * hitResult.GetNormal().z)));
             }
 
             return isHit;
