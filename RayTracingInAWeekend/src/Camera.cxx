@@ -88,15 +88,34 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT curre
         Ray scattered;
         Color attenuation;
         float pdfValue;
-        Color emissionColor = hitResult.GetMaterial()->Emitted(hitResult.u, hitResult.v, hitResult.GetIntersection());
+        Color emissionColor = hitResult.GetMaterial()->Emitted(ray, hitResult, hitResult.u, hitResult.v, hitResult.GetIntersection());
 
         if (!hitResult.GetMaterial()->Scatter(ray, hitResult, attenuation, scattered, pdfValue))
         {
             return emissionColor;
         }
 
+        Point3 onLight(RandomFloat(213.f, 343.f), 544.f, RandomFloat(227.f, 332.f));
+        Vector3 toLight = onLight - hitResult.GetIntersection();
+        float distance2 = glm::length2(toLight);
+        toLight = glm::normalize(toLight);
+
+        if (glm::dot(toLight, hitResult.GetNormal()) < 0.f)
+        {
+            return emissionColor;
+        }
+
+        float lightArea = (343.f - 213.f) * (332.f - 227.f);
+        float lightCosine = std::fabs(toLight.y);
+        if (lightCosine < 0.000001f)
+        {
+            return emissionColor;
+        }
+
+        pdfValue = distance2 / (lightCosine * lightArea);
+        scattered = Ray(hitResult.GetIntersection(), toLight);
+
         float scatteringPdf = hitResult.GetMaterial()->ScatteringPdf(ray, hitResult, scattered);
-        pdfValue = scatteringPdf;
 
         Color scatterColor = attenuation * scatteringPdf * SampleColor(scattered, world, ++currentBounces) / pdfValue;
         return scatterColor + emissionColor;

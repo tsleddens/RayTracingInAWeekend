@@ -38,7 +38,13 @@ namespace tsleddens
         {
             scattered = Ray(hitResult.GetIntersection(), RandomUnitVector3());
             attenuation = m_texture->Value(hitResult.u, hitResult.v, hitResult.GetIntersection());
+            pdf = 1.f / (4.f * glm::pi<float>());
             return true;
+        }
+
+        [[nodiscard]] float ScatteringPdf(const Ray&, const HitResult&, const Ray&) const override
+        {
+            return 1.f / (4.f * glm::pi<float>());
         }
     };
 }

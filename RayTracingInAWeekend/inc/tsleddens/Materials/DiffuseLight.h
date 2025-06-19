@@ -33,8 +33,13 @@ namespace tsleddens
 
         ~DiffuseLight() override = default;
 
-        [[nodiscard]] Color Emitted(float u, float v, const Point3& p) const override
+        [[nodiscard]] Color Emitted(const Ray& ray, const HitResult& hitResult, float u, float v, const Point3& p) const override
         {
+            if (!hitResult.IsFrontFace())
+            {
+                return Color(0.f);
+            }
+
             return m_texture->Value(u, v, p);
         }
     };

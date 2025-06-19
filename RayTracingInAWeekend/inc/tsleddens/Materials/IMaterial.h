@@ -14,7 +14,7 @@ namespace tsleddens
             return false;
         }
 
-        [[nodiscard]] virtual Color Emitted(float, float, const Point3&) const
+        [[nodiscard]] virtual Color Emitted(const Ray&, const HitResult&, float, float, const Point3&) const
         {
             return Color(0.f);
         }
