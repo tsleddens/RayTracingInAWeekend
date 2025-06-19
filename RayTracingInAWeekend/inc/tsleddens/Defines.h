@@ -94,3 +94,15 @@ inline Vector3 RandomBounce(const Vector3& normal)
     }
     return randomDirection;
 }
+
+inline Vector3 RandomCosineDirection() {
+    const float r1 = RandomFloat();
+    const float r2 = RandomFloat();
+
+    const float phi = 2 * glm::pi<float>() * r1;
+    const float x = std::cos(phi) * std::sqrt(r2);
+    const float y = std::sin(phi) * std::sqrt(r2);
+    const float z = std::sqrt(1 - r2);
+
+    return Vector3(x, y, z);
+}

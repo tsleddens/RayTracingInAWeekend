@@ -5,6 +5,7 @@
 #include "../HitResult.h"
 #include "../Textures/ColorTexture.h"
 #include "IMaterial.h"
+#include "tsleddens/ONB.h"
 
 namespace tsleddens
 {
@@ -33,21 +34,25 @@ namespace tsleddens
         {
         }
 
-        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation,
-                                   Ray& scattered) const override;
-    };
-
-    inline bool Lambertian::Scatter(const Ray&, const HitResult& hitResult, Color& attenuation, Ray& scattered) const
-    {
-        Vector3 scatterDirection = hitResult.GetNormal() + RandomUnitVector3();
-
-        if (IsNearZero(scatterDirection))
+        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const override
         {
-            scatterDirection = hitResult.GetNormal();
+            ONB uvw(hitResult.GetNormal());
+            Vector3 scatterDirection = uvw.Transform(RandomCosineDirection());
+
+            if (IsNearZero(scatterDirection))
+            {
+                scatterDirection = hitResult.GetNormal();
+            }
+
+            scattered = Ray(hitResult.GetIntersection(), glm::normalize(scatterDirection));
+            attenuation = m_texture->Value(hitResult.u, hitResult.v, hitResult.GetIntersection());
+            pdf = glm::dot(uvw.W(), scattered.GetDirection()) / glm::pi<float>();
+            return true;
         }
 
-        scattered = Ray(hitResult.GetIntersection(), scatterDirection);
-        attenuation = m_texture->Value(hitResult.u, hitResult.v, hitResult.GetIntersection());
-        return true;
-    }
+        [[nodiscard]] float ScatteringPdf(const Ray& ray, const HitResult& hitResult, const Ray& scattered) const override
+        {
+            return 1.f / (2.f * glm::pi<float>());
+        }
+    };
 }

@@ -17,14 +17,14 @@ namespace tsleddens
         {
         }
 
-        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered) const override;
+        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const override;
         [[nodiscard]] float GetFuzz() const { return m_fuzz; }
 
         void SetFuzz(float fuzz) { m_fuzz = fuzz < 1.0f ? fuzz : 1.0f; }
     };
 }
 
-inline bool tsleddens::Metal::Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered) const
+inline bool tsleddens::Metal::Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const
 {
     Vector3 reflected = glm::reflect(ray.GetDirection(), hitResult.GetNormal());
     Vector3 scatterDirection = reflected + (m_fuzz * RandomUnitVector3());

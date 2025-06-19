@@ -19,14 +19,14 @@ namespace tsleddens
 
         void SetRefractionIndex(float refractionIndex) { m_refractionIndex = refractionIndex; }
 
-        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered) const override;
+        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const override;
 
     private:
 
         static float Reflectance(float cosine, float refractionIndex);
     };
 
-    inline bool Dielectric::Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered) const
+    inline bool Dielectric::Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const
     {
         attenuation = Color(1.f); // Dielectric materials do not absorb light
         const float refractionIndex = hitResult.IsFrontFace() ? (1.0f / m_refractionIndex) : m_refractionIndex;

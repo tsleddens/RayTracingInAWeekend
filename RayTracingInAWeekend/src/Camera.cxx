@@ -87,14 +87,18 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT curre
 
         Ray scattered;
         Color attenuation;
+        float pdfValue;
         Color emissionColor = hitResult.GetMaterial()->Emitted(hitResult.u, hitResult.v, hitResult.GetIntersection());
 
-        if (!hitResult.GetMaterial()->Scatter(ray, hitResult, attenuation, scattered))
+        if (!hitResult.GetMaterial()->Scatter(ray, hitResult, attenuation, scattered, pdfValue))
         {
             return emissionColor;
         }
 
-        Color scatterColor = attenuation * SampleColor(scattered, world, ++currentBounces);
+        float scatteringPdf = hitResult.GetMaterial()->ScatteringPdf(ray, hitResult, scattered);
+        pdfValue = scatteringPdf;
+
+        Color scatterColor = attenuation * scatteringPdf * SampleColor(scattered, world, ++currentBounces) / pdfValue;
         return scatterColor + emissionColor;
     }
 

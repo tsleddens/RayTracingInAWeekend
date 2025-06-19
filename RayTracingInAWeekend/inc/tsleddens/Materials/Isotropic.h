@@ -34,7 +34,7 @@ namespace tsleddens
 
         ~Isotropic() override = default;
 
-        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered) const override
+        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const override
         {
             scattered = Ray(hitResult.GetIntersection(), RandomUnitVector3());
             attenuation = m_texture->Value(hitResult.u, hitResult.v, hitResult.GetIntersection());
