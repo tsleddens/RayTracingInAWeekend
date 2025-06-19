@@ -4,6 +4,7 @@
 #include "HitResult.h"
 #include "Materials/IMaterial.h"
 #include "IRayTraceable.h"
+#include "PDF.h"
 #include "Ray.h"
 #include "Win32Rasterizer.h"
 
@@ -95,25 +96,9 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT curre
             return emissionColor;
         }
 
-        Point3 onLight(RandomFloat(213.f, 343.f), 544.f, RandomFloat(227.f, 332.f));
-        Vector3 toLight = onLight - hitResult.GetIntersection();
-        float distance2 = glm::length2(toLight);
-        toLight = glm::normalize(toLight);
-
-        if (glm::dot(toLight, hitResult.GetNormal()) < 0.f)
-        {
-            return emissionColor;
-        }
-
-        float lightArea = (343.f - 213.f) * (332.f - 227.f);
-        float lightCosine = std::fabs(toLight.y);
-        if (lightCosine < 0.000001f)
-        {
-            return emissionColor;
-        }
-
-        pdfValue = distance2 / (lightCosine * lightArea);
-        scattered = Ray(hitResult.GetIntersection(), toLight);
+        CosinePDF surfacePdf(hitResult.GetNormal());
+        scattered = Ray(hitResult.GetIntersection(), surfacePdf.Generate());
+        pdfValue = surfacePdf.Value(scattered.GetDirection());
 
         float scatteringPdf = hitResult.GetMaterial()->ScatteringPdf(ray, hitResult, scattered);
 

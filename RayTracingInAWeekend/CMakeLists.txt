@@ -19,6 +19,7 @@ set(INC_FILES
     ${PRIVATE_INC_FOLDER}/HitResult.h
     ${PRIVATE_INC_FOLDER}/IRayTraceable.h
     ${PRIVATE_INC_FOLDER}/ONB.h
+    ${PRIVATE_INC_FOLDER}/PDF.h
     ${PRIVATE_INC_FOLDER}/Perlin.h
     ${PRIVATE_INC_FOLDER}/Quad.h
     ${PRIVATE_INC_FOLDER}/Range.h
