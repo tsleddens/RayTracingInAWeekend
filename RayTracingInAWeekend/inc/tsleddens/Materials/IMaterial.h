@@ -1,4 +1,5 @@
 #pragma once
+#include "ScatterResult.h"
 
 namespace tsleddens
 {
@@ -9,7 +10,7 @@ namespace tsleddens
     {
         virtual ~IMaterial() = default;
 
-        [[nodiscard]] virtual bool Scatter(const Ray&, const HitResult&, Color&, Ray&, float&) const
+        [[nodiscard]] virtual bool Scatter(const Ray&, const HitResult&, ScatterResult&) const
         {
             return false;
         }

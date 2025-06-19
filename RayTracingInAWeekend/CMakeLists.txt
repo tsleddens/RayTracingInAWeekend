@@ -26,6 +26,7 @@ set(INC_FILES
     ${PRIVATE_INC_FOLDER}/Ray.h
     ${PRIVATE_INC_FOLDER}/RotateY.h
     ${PRIVATE_INC_FOLDER}/RtwImage.h
+    ${PRIVATE_INC_FOLDER}/ScatterResult.h
     ${PRIVATE_INC_FOLDER}/Sphere.h
     ${PRIVATE_INC_FOLDER}/Translate.h
     ${PRIVATE_INC_FOLDER}/Win32Rasterizer.h

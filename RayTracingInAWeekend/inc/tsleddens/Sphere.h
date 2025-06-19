@@ -36,5 +36,12 @@ namespace tsleddens
             u = phi / (2.f * glm::pi<float>());
             v = theta / glm::pi<float>();
         }
+
+        [[nodiscard]] float PdfValue(const Point3&, const Vector3&) const override;
+        [[nodiscard]] Vector3 Random(const Point3&) const override;
+
+    private:
+
+        static Vector3 RandomToSphere(float radius2, float distance2);
     };
 }

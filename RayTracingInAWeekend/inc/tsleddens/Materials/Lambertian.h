@@ -6,6 +6,7 @@
 #include "../Textures/ColorTexture.h"
 #include "IMaterial.h"
 #include "tsleddens/ONB.h"
+#include "tsleddens/PDF.h"
 
 namespace tsleddens
 {
@@ -14,12 +15,12 @@ namespace tsleddens
         std::shared_ptr<ITexture> m_texture;
 
     public:
-        Lambertian(const std::shared_ptr<ITexture>& texture) :
+        explicit Lambertian(const std::shared_ptr<ITexture>& texture) :
             m_texture(texture)
         {
         }
 
-        Lambertian(const Color& albedo) :
+        explicit Lambertian(const Color& albedo) :
             m_texture(std::make_shared<ColorTexture>(albedo))
         {
         }
@@ -29,30 +30,30 @@ namespace tsleddens
         {
         }
 
-        Lambertian(const float rgb) :
+        explicit Lambertian(const float rgb) :
             Lambertian(std::make_shared<ColorTexture>(Color(rgb)))
         {
         }
 
-        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const override
+        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult) const override
         {
-            ONB uvw(hitResult.GetNormal());
-            Vector3 scatterDirection = uvw.Transform(RandomCosineDirection());
+            const ONB uvw(hitResult.GetNormal());
 
-            if (IsNearZero(scatterDirection))
+            if (Vector3 scatterDirection = uvw.Transform(RandomCosineDirection()); IsNearZero(scatterDirection))
             {
                 scatterDirection = hitResult.GetNormal();
             }
 
-            scattered = Ray(hitResult.GetIntersection(), glm::normalize(scatterDirection));
-            attenuation = m_texture->Value(hitResult.u, hitResult.v, hitResult.GetIntersection());
-            pdf = glm::dot(uvw.W(), scattered.GetDirection()) / glm::pi<float>();
+            scatterResult.Attenuation = m_texture->Value(hitResult.u, hitResult.v, hitResult.GetIntersection());
+            scatterResult.pPdf = std::make_shared<CosinePDF>(hitResult.GetNormal());
+            scatterResult.SkipPdf = false;
             return true;
         }
 
         [[nodiscard]] float ScatteringPdf(const Ray& ray, const HitResult& hitResult, const Ray& scattered) const override
         {
-            return 1.f / (2.f * glm::pi<float>());
+            const float cosTheta = glm::dot(hitResult.GetNormal(), glm::normalize(scattered.GetDirection()));
+            return cosTheta < 0.f ? 0.f : cosTheta / glm::pi<float>();
         }
     };
 }

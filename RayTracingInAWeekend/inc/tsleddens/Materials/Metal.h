@@ -11,25 +11,28 @@ namespace tsleddens
         float m_fuzz;
 
     public:
-        Metal(const Color& albedo, float fuzz) :
+        Metal(const Color& albedo, const float fuzz) :
             m_albedo(albedo),
             m_fuzz(fuzz < 1.0f ? fuzz : 1.0f)
         {
         }
 
-        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const override;
+        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult) const override;
         [[nodiscard]] float GetFuzz() const { return m_fuzz; }
 
-        void SetFuzz(float fuzz) { m_fuzz = fuzz < 1.0f ? fuzz : 1.0f; }
+        void SetFuzz(const float fuzz) { m_fuzz = fuzz < 1.0f ? fuzz : 1.0f; }
     };
 }
 
-inline bool tsleddens::Metal::Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const
+inline bool tsleddens::Metal::Scatter(const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult) const
 {
-    Vector3 reflected = glm::reflect(ray.GetDirection(), hitResult.GetNormal());
-    Vector3 scatterDirection = reflected + (m_fuzz * RandomUnitVector3());
-    scattered = Ray(hitResult.GetIntersection(), scatterDirection);
-    attenuation = m_albedo;
-    return (glm::dot(scattered.GetDirection(), hitResult.GetNormal()) > 0.f);
+    const Vector3 reflected = glm::reflect(ray.GetDirection(), hitResult.GetNormal());
+    const Vector3 scatterDirection = reflected + (m_fuzz * RandomUnitVector3());
+
+    scatterResult.Attenuation = m_albedo;
+    scatterResult.pPdf = nullptr;
+    scatterResult.SkipPdf = true;
+    scatterResult.SkipPdfRay = Ray(hitResult.GetIntersection(), scatterDirection);
+    return true;
 }
 

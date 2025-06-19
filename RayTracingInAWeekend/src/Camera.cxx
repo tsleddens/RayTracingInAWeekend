@@ -86,27 +86,29 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT curre
             return GetNormalColor(hitResult.GetNormal());
         }
 
-        Ray scattered;
-        Color attenuation;
-        float pdfValue;
+        ScatterResult scatterResult;
         Color emissionColor = hitResult.GetMaterial()->Emitted(ray, hitResult, hitResult.u, hitResult.v, hitResult.GetIntersection());
 
-        if (!hitResult.GetMaterial()->Scatter(ray, hitResult, attenuation, scattered, pdfValue))
+        if (!hitResult.GetMaterial()->Scatter(ray, hitResult, scatterResult))
         {
             return emissionColor;
         }
 
-        auto pdf0 = std::make_shared<HittablePDF>(lights, hitResult.GetIntersection());
-        auto pdf1 = std::make_shared<CosinePDF>(hitResult.GetNormal());
-        MixturePDF mixturePdf(pdf0, pdf1);
+        if (scatterResult.SkipPdf)
+        {
+            return scatterResult.Attenuation * SampleColor(scatterResult.SkipPdfRay, world, ++currentBounces, lights);
+        }
 
-        scattered = Ray(hitResult.GetIntersection(), mixturePdf.Generate());
-        pdfValue = mixturePdf.Value(scattered.GetDirection());
+        auto pLight = std::make_shared<HittablePDF>(lights, hitResult.GetIntersection());
+        MixturePDF mixturePdf(pLight, scatterResult.pPdf);
+
+        Ray scattered = Ray(hitResult.GetIntersection(), mixturePdf.Generate());
+        float pdfValue = mixturePdf.Value(scattered.GetDirection());
 
         float scatteringPdf = hitResult.GetMaterial()->ScatteringPdf(ray, hitResult, scattered);
 
         Color sampleColor = SampleColor(scattered, world, ++currentBounces, lights);
-        Color scatterColor = (attenuation * scatteringPdf * sampleColor) / pdfValue;
+        Color scatterColor = (scatterResult.Attenuation * scatteringPdf * sampleColor) / pdfValue;
 
         return scatterColor + emissionColor;
     }

@@ -34,11 +34,11 @@ namespace tsleddens
 
         ~Isotropic() override = default;
 
-        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const override
+        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult) const override
         {
-            scattered = Ray(hitResult.GetIntersection(), RandomUnitVector3());
-            attenuation = m_texture->Value(hitResult.u, hitResult.v, hitResult.GetIntersection());
-            pdf = 1.f / (4.f * glm::pi<float>());
+            scatterResult.Attenuation = m_texture->Value(hitResult.u, hitResult.v, hitResult.GetIntersection());
+            scatterResult.pPdf = std::make_shared<SpherePDF>();
+            scatterResult.SkipPdf = false;
             return true;
         }
 

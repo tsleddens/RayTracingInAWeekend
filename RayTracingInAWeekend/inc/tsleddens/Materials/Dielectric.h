@@ -19,16 +19,19 @@ namespace tsleddens
 
         void SetRefractionIndex(float refractionIndex) { m_refractionIndex = refractionIndex; }
 
-        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const override;
+        [[nodiscard]] bool Scatter(const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult) const override;
 
     private:
 
         static float Reflectance(float cosine, float refractionIndex);
     };
 
-    inline bool Dielectric::Scatter(const Ray& ray, const HitResult& hitResult, Color& attenuation, Ray& scattered, float& pdf) const
+    inline bool Dielectric::Scatter(const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult) const
     {
-        attenuation = Color(1.f); // Dielectric materials do not absorb light
+        scatterResult.Attenuation = Color(1.f); // Dielectric materials do not absorb light
+        scatterResult.pPdf = nullptr;
+        scatterResult.SkipPdf = true;
+
         const float refractionIndex = hitResult.IsFrontFace() ? (1.0f / m_refractionIndex) : m_refractionIndex;
 
         const float cosTheta = glm::clamp(glm::dot(-ray.GetDirection(), hitResult.GetNormal()), -1.0f, 1.0f);
@@ -47,9 +50,7 @@ namespace tsleddens
 
         if (!std::isfinite(direction.x) || glm::length(direction) < EPSILON) return false;
 
-        scattered = Ray(hitResult.GetIntersection() + direction * EPSILON, direction);
-
-
+        scatterResult.SkipPdfRay = Ray(hitResult.GetIntersection() + direction * EPSILON, direction);
         return true;
     }
 
