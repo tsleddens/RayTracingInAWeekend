@@ -96,12 +96,14 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT curre
             return emissionColor;
         }
 
-        HittablePDF lightPdf(lights, hitResult.GetIntersection());
-        scattered = Ray(hitResult.GetIntersection(), lightPdf.Generate());
-        pdfValue = lightPdf.Value(scattered.GetDirection());
+        auto pdf0 = std::make_shared<HittablePDF>(lights, hitResult.GetIntersection());
+        auto pdf1 = std::make_shared<CosinePDF>(hitResult.GetNormal());
+        MixturePDF mixturePdf(pdf0, pdf1);
+
+        scattered = Ray(hitResult.GetIntersection(), mixturePdf.Generate());
+        pdfValue = mixturePdf.Value(scattered.GetDirection());
 
         float scatteringPdf = hitResult.GetMaterial()->ScatteringPdf(ray, hitResult, scattered);
-
 
         Color sampleColor = SampleColor(scattered, world, ++currentBounces, lights);
         Color scatterColor = (attenuation * scatteringPdf * sampleColor) / pdfValue;
