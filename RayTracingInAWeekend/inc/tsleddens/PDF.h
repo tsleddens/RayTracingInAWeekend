@@ -11,10 +11,32 @@ namespace tsleddens
         [[nodiscard]] virtual Vector3 Generate() const = 0;
     };
 
+    class HittablePDF : public PDF
+    {
+        Point3 m_origin;
+        IRayTraceable* m_objects;
+
+    public:
+        HittablePDF(IRayTraceable* objects, const Point3& origin) :
+            m_origin(origin),
+            m_objects(objects){}
+
+        [[nodiscard]] float Value(const Vector3& direction) const override
+        {
+            return m_objects->PdfValue(m_origin, direction);
+        }
+
+        [[nodiscard]] Vector3 Generate() const override
+        {
+            return m_objects->Random(m_origin);
+        }
+
+    };
+
     class SpherePDF : public PDF
     {
     public:
-        [[nodiscard]] float Value(const Vector3& direction) const override
+        [[nodiscard]] float Value(const Vector3&) const override
         {
             return 1.f / (4.f * glm::pi<float>());
         }

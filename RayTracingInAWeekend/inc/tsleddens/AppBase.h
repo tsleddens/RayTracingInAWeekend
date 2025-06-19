@@ -23,12 +23,13 @@ namespace tsleddens
 
         World* GetWorld() { return &m_world; }
         Camera* GetCamera() { return &m_camera; }
+        [[nodiscard]] virtual IRayTraceable* GetLights() { return nullptr; }
 
         virtual void InitWorld(World& world) = 0;
 
         void OnInit() final;
         void OnResize(UINT newWidth, UINT newHeight) final;
-        void OnBeforeRender() final { m_camera.TraceAndPlot(m_bvh, *this); }
+        void OnBeforeRender() final { m_camera.Render(m_bvh, *this, GetLights()); }
         void OnAfterRender() final { UpdateFps(); }
 
         void OnUpdate() override {}

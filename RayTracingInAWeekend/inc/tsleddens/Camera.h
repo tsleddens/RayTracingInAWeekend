@@ -81,7 +81,7 @@ namespace tsleddens
         void SetMaxBounces(const UINT max) { m_maxBounces = max; }
         void SetSamplesPerPixel(const UINT value) { m_samplesPerPixel = value < 1 ? 1 : value; }
 
-        void TraceAndPlot(const IRayTraceable& world, Win32Rasterizer& rasterizer);
+        void Render(const IRayTraceable& world, Win32Rasterizer& rasterizer, IRayTraceable* lights);
         void EnableRenderNormals() { m_isRenderNormalsEnabled = true; }
         void DisableRenderNormals() { m_isRenderNormalsEnabled = false; }
 
@@ -92,7 +92,7 @@ namespace tsleddens
     private:
         void UpdateViewport() { Resize(m_imageWidth, m_imageHeight); }
         [[nodiscard]] Ray GetRay(const UINT x, const UINT y) const;
-        [[nodiscard]] Color SampleColor(const Ray& ray, const IRayTraceable& world, UINT currentBounces) const;
+        [[nodiscard]] Color SampleColor(const Ray& ray, const IRayTraceable& world, UINT currentBounces, IRayTraceable* lights) const;
         static Color GetNormalColor(const Vector3& normal);
         static Color GetNoHitColor(const Ray& ray);
         static Vector3 GenerateRandomOffset(float minRange = 0.f, float maxRange = 1.f);

@@ -18,7 +18,7 @@ bool Quad::Intersect(const Ray& ray, HitResult& hitResult, Range<float> range) c
             const Vector3 planarHitpoint = intersection - m_q;
             const float alpha = glm::dot(m_w, glm::cross(planarHitpoint, m_v));
 
-            if (float beta = glm::dot(m_w, glm::cross(m_u, planarHitpoint)); IsInterior(alpha, beta, hitResult))
+            if (const float beta = glm::dot(m_w, glm::cross(m_u, planarHitpoint)); IsInterior(alpha, beta, hitResult))
             {
                 hitResult.SetIntersectionAndDistance(t, ray);
                 hitResult.SetFaceNormal(ray, m_normal, false);
@@ -29,6 +29,26 @@ bool Quad::Intersect(const Ray& ray, HitResult& hitResult, Range<float> range) c
     }
 
     return false;
+}
+
+float Quad::PdfValue(const Point3& origin, const Vector3& direction) const
+{
+    HitResult hitResult;
+    if (!this->Intersect(Ray(origin, direction), hitResult, Range<float>(0.001f, FLT_MAX)))
+    {
+        return 0.f;
+    }
+
+    const float distanceSquared = hitResult.GetDistance() * hitResult.GetDistance() * glm::length2(direction);
+    const float cosine = std::fabs(glm::dot(direction, hitResult.GetNormal())) / glm::length2(direction);
+
+    return distanceSquared / (cosine * m_area);
+}
+
+Vector3 Quad::Random(const Point3& origin) const
+{
+    const Vector3 p = m_q + (RandomFloat() * m_u) + (RandomFloat() * m_v);
+    return p - origin;
 }
 
 bool Quad::IsInterior(float a, float b, HitResult& hitResult)

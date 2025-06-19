@@ -15,6 +15,8 @@ class CornellBox final : public AppBase
     std::unique_ptr<IMaterial> m_white;
     std::unique_ptr<IMaterial> m_green;
     std::unique_ptr<IMaterial> m_light;
+    std::shared_ptr<IMaterial> m_emptyMaterial;
+    std::unique_ptr<IRayTraceable> m_lights;
 
 public:
 
@@ -23,7 +25,9 @@ public:
         m_red(std::make_unique<Lambertian>(.65f, .05f, .05f)),
         m_white(std::make_unique<Lambertian>(.73f)),
         m_green(std::make_unique<Lambertian>(.12f, .45f, .15f)),
-        m_light(std::make_unique<DiffuseLight>(15.f))
+        m_light(std::make_unique<DiffuseLight>(15.f)),
+        m_emptyMaterial(std::shared_ptr<IMaterial>()),
+        m_lights(std::make_unique<Quad>(Point3(343.f, 554.f, 332.f), Vector3(-130.f, 0.f, 0.f), Vector3(0.f, 0.f, -105.f), m_emptyMaterial.get()))
     {
     }
 
@@ -55,4 +59,6 @@ protected:
         box2 = std::make_shared<Translate>(box2, Point3(130.f, 0.f, 65.f));
         world.AddObject(box2);
     }
+
+    [[nodiscard]] IRayTraceable* GetLights() override { return m_lights.get(); }
 };

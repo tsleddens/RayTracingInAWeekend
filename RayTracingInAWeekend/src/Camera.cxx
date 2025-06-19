@@ -42,7 +42,7 @@ void Camera::Resize(UINT imageWidth, UINT imageHeight)
     m_p0 = m_position - (m_deFocusDisk.GetDistance() * w) - horizontal / 2.f - vertical / 2.f;
 }
 
-void Camera::TraceAndPlot(const IRayTraceable& world, Win32Rasterizer& rasterizer)
+void Camera::Render(const IRayTraceable& world, Win32Rasterizer& rasterizer, IRayTraceable* lights)
 {
     float reciprocalFrameCount = 1.f / static_cast<float>(m_frameCount);
     for (UINT y = 0; y < m_imageHeight; ++y)
@@ -50,7 +50,7 @@ void Camera::TraceAndPlot(const IRayTraceable& world, Win32Rasterizer& rasterize
         for (UINT x = 0; x < m_imageWidth; ++x)
         {
             Ray ray = GetRay(x, y);
-            Color color = SampleColor(ray, world, 0);
+            Color color = SampleColor(ray, world, 0, lights);
             rasterizer.PlotPixel(x, y, color, reciprocalFrameCount);
         }
     }
@@ -70,7 +70,7 @@ Ray Camera::GetRay(const UINT x, const UINT y) const
     return Ray(rayOrigin, direction);
 }
 
-Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT currentBounces) const
+Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT currentBounces, IRayTraceable* lights) const
 {
     if (currentBounces == m_maxBounces)
     {
@@ -96,13 +96,16 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT curre
             return emissionColor;
         }
 
-        CosinePDF surfacePdf(hitResult.GetNormal());
-        scattered = Ray(hitResult.GetIntersection(), surfacePdf.Generate());
-        pdfValue = surfacePdf.Value(scattered.GetDirection());
+        HittablePDF lightPdf(lights, hitResult.GetIntersection());
+        scattered = Ray(hitResult.GetIntersection(), lightPdf.Generate());
+        pdfValue = lightPdf.Value(scattered.GetDirection());
 
         float scatteringPdf = hitResult.GetMaterial()->ScatteringPdf(ray, hitResult, scattered);
 
-        Color scatterColor = attenuation * scatteringPdf * SampleColor(scattered, world, ++currentBounces) / pdfValue;
+
+        Color sampleColor = SampleColor(scattered, world, ++currentBounces, lights);
+        Color scatterColor = (attenuation * scatteringPdf * sampleColor) / pdfValue;
+
         return scatterColor + emissionColor;
     }
 

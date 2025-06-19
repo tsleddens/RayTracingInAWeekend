@@ -13,6 +13,7 @@ namespace tsleddens
         Vector3 m_normal;
 
         float m_d;
+        float m_area;
 
         IMaterial* m_pMaterial;
 
@@ -30,12 +31,17 @@ namespace tsleddens
             m_normal = glm::normalize(n);
             m_d = glm::dot(m_normal, q);
             m_w = n / glm::dot(n, n);
+
+            m_area = glm::length(n);
         }
 
         [[nodiscard]] bool Intersect(const Ray& ray, HitResult& hitResult, Range<float> range) const override;
         [[nodiscard]] IMaterial* GetMaterial() const override { return m_pMaterial; }
         [[nodiscard]] bool HasFlippedNormals() const override { return false; }
         [[nodiscard]] const AABB& BoundingBox() const override { return m_boundingBox; }
+
+        [[nodiscard]] float PdfValue(const Point3&, const Vector3&) const override;
+        [[nodiscard]] Vector3 Random(const Point3&) const override;
 
     private:
         [[nodiscard]] AABB InitBoundingBox() const
