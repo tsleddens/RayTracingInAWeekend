@@ -2,6 +2,7 @@
 #include "CornellBox.h"
 #include "CornellSmoke.h"
 #include "Earth.h"
+#include "FinalScene.h"
 #include "HelloSphere.h"
 #include "PerlinSpheres.h"
 #include "Quads.h"
@@ -20,6 +21,7 @@ int CALLBACK wWinMain(HINSTANCE, HINSTANCE, PWSTR, int nCmdShow)
     // auto app = SimpleLight(1024 / 2, 768 / 2, L"Test");
     auto app = CornellBox(600, 600, L"Test");
     // auto app = CornellSmoke(600, 600, L"Test");
+    // auto app = FinalScene(600, 600, L"Test");
     return app.Run(nCmdShow);
 }
 

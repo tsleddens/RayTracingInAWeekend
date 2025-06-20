@@ -13,6 +13,7 @@ set(INC_FILES
     "CornellBox.h"
     "CornellSmoke.h"
     "Earth.h"
+    "FinalScene.h"
     "HelloSphere.h"
     "PerlinSpheres.h"
     "Quads.h"
