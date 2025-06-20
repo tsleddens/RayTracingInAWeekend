@@ -105,10 +105,30 @@ Color Camera::SampleColor(const Ray& ray, const IRayTraceable& world, UINT curre
         Ray scattered = Ray(hitResult.GetIntersection(), mixturePdf.Generate());
         float pdfValue = mixturePdf.Value(scattered.GetDirection());
 
+        if (pdfValue < 1e-5f)
+        {
+            return emissionColor;
+        }
+
         float scatteringPdf = hitResult.GetMaterial()->ScatteringPdf(ray, hitResult, scattered);
 
         Color sampleColor = SampleColor(scattered, world, ++currentBounces, lights);
-        Color scatterColor = (scatterResult.Attenuation * scatteringPdf * sampleColor) / pdfValue;
+        Color attenuation = scatterResult.Attenuation;
+
+        if (currentBounces > 3)
+        {
+            float p = glm::clamp(glm::compMax(attenuation), 0.1f, 1.f);
+            if (RandomFloat() > p)
+            {
+                return emissionColor;
+            }
+            attenuation /= p;
+        }
+
+        attenuation = glm::min(attenuation, Color(10.f));
+
+        Color scatterColor = (attenuation * scatteringPdf * sampleColor) / pdfValue;
+        scatterColor = glm::min(scatterColor, Color(10.f));
 
         return scatterColor + emissionColor;
     }

@@ -25,7 +25,7 @@ void AppBase::UpdateFps()
     if (elapsedSeconds >= 1.0f) // only update every second
     {
         static wchar_t buffer[256] = {};
-        (void)swprintf_s(buffer, L"FPS: %.2f, Samples: %llu, %.2f seconds", static_cast<float>(m_sampleCount) / elapsedCurrentSampleSeconds, m_sampleCount, elapsedCurrentSampleSeconds);
+        (void)swprintf_s(buffer, L"FPS: %.2f, Samples: %llu", static_cast<float>(m_sampleCount) / elapsedCurrentSampleSeconds, m_sampleCount);
         SetWindowTitle(buffer);
         lastUpdate = now;
     }
