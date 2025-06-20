@@ -11,20 +11,22 @@ void AppBase::OnInit()
 void AppBase::OnResize(UINT newWidth, UINT newHeight)
 {
     m_camera.Resize(newWidth, newHeight);
-    m_frameCount = 0;
+    m_sampleCount = 0;
+    m_currentSampleStartTime = std::chrono::high_resolution_clock::now();
 }
 
 void AppBase::UpdateFps()
 {
-    ++m_frameCount;
-    static ULONGLONG framesPassed = m_frameCount;
-    static ULONGLONG prevCount = GetTickCount();
-    if (GetTickCount64() - prevCount > 1000) // only update every second
+    static auto lastUpdate = std::chrono::high_resolution_clock::now();
+    ++m_sampleCount;
+    const auto now = std::chrono::high_resolution_clock::now();
+    const auto elapsedSeconds = std::chrono::duration<float>(now - lastUpdate).count();
+    const auto elapsedCurrentSampleSeconds = std::chrono::duration<float>(now - m_currentSampleStartTime).count();
+    if (elapsedSeconds >= 1.0f) // only update every second
     {
         static wchar_t buffer[256] = {};
-        (void)swprintf_s(buffer, L"FPS: %d, Samples: %llu", static_cast<int>(m_frameCount - framesPassed), m_frameCount);
+        (void)swprintf_s(buffer, L"FPS: %.2f, Samples: %llu, %.2f seconds", static_cast<float>(m_sampleCount) / elapsedCurrentSampleSeconds, m_sampleCount, elapsedCurrentSampleSeconds);
         SetWindowTitle(buffer);
-        framesPassed = m_frameCount;
-        prevCount = GetTickCount64();
+        lastUpdate = now;
     }
 }

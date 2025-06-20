@@ -11,12 +11,17 @@ namespace tsleddens
         Camera m_camera;
         World m_world{};
         BvhNode m_bvh{};
-        ULONGLONG m_frameCount = 0;
+        ULONGLONG m_sampleCount = 0;
+
+        std::chrono::time_point<std::chrono::steady_clock> m_appStartTime;
+        std::chrono::time_point<std::chrono::steady_clock> m_currentSampleStartTime;
 
     protected:
         AppBase(int width, int height, const wchar_t* title) :
             Win32Rasterizer(width, height, title),
-            m_camera(width, height)
+            m_camera(width, height),
+            m_appStartTime(std::chrono::high_resolution_clock::now()),
+            m_currentSampleStartTime(m_appStartTime)
         {
         }
         ~AppBase() override = default;
