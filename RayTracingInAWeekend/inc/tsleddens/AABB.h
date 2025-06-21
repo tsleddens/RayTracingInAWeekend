@@ -4,77 +4,87 @@
 
 namespace tsleddens
 {
-    class Ray;
+class Ray;
 
-    class AABB
+class AABB
+{
+    Vector3 m_min, m_max;
+
+public:
+    AABB() = default;
+
+    AABB( const AABB& a, const AABB& b )
+        : m_min( glm::min( a.m_min, b.m_min ) ),
+          m_max( glm::max( a.m_max, b.m_max ) ) {}
+
+    AABB( const Point3& a, const Point3& b )
+        : m_min( glm::min( a.x, b.x ), glm::min( a.y, b.y ), glm::min( a.z, b.z ) ),
+          m_max( glm::max( a.x, b.x ), glm::max( a.y, b.y ), glm::max( a.z, b.z ) )
     {
-        Range<float> m_x, m_y, m_z = {};
+        PadToMinimums();
+    }
 
-    public:
-        AABB() = default;
+    [[nodiscard]] Range<float> AxisRange( const EAxis n ) const
+    {
+        if ( n == EAxis::Y )
+            return { m_min.y, m_max.y };
+        if ( n == EAxis::Z )
+            return { m_min.z, m_max.z };
+        return { m_min.x, m_max.x };
+    }
 
-        AABB(const Range<float>& x, const Range<float>& y, const Range<float>& z) :
-            m_x(x),
-            m_y(y),
-            m_z(z)
+    [[nodiscard]] const Vector3& Min() const
+    {
+        return m_min;
+    }
+
+    [[nodiscard]] const Vector3& Max() const
+    {
+        return m_max;
+    }
+
+    [[nodiscard]] EAxis LongestAxis() const
+    {
+        const auto diff = m_max - m_min;
+
+        const float xLength = diff.x;
+        const float yLength = diff.y;
+        const float zLength = diff.z;
+
+        if ( xLength > yLength )
+            return xLength > zLength ? EAxis::X : EAxis::Z;
+
+        return yLength > zLength ? EAxis::Y : EAxis::Z;
+    }
+
+    [[nodiscard]] bool IsHit( const Ray& ray, Range<float> minMax ) const;
+
+    AABB operator+( const Vector3& offset ) const
+    {
+        return { m_min + offset, m_max + offset };
+    }
+
+private:
+    void PadToMinimums()
+    {
+        constexpr float delta    = .0001f;
+        constexpr float toExpand = delta * .5f;
+
+        if ( m_max.x - m_min.x < delta )
         {
-            PadToMinimums();
+            m_min.x -= toExpand;
+            m_max.x += toExpand;
         }
-
-        AABB(const AABB& a, const AABB& b) :
-            m_x(a.m_x, b.m_x),
-            m_y(a.m_y, b.m_y),
-            m_z(a.m_z, b.m_z)
+        if ( m_max.y - m_min.y < delta )
         {
+            m_min.y -= toExpand;
+            m_max.y += toExpand;
         }
-
-        AABB(const Point3& a, const Point3& b)
+        if ( m_max.z - m_min.z < delta )
         {
-            m_x = (a.x <= b.x) ? Range<float>(a.x, b.x) : Range<float>(b.x, a.x);
-            m_y = (a.y <= b.y) ? Range<float>(a.y, b.y) : Range<float>(b.y, a.y);
-            m_z = (a.z <= b.z) ? Range<float>(a.z, b.z) : Range<float>(b.z, a.z);
-
-            PadToMinimums();
+            m_min.z -= toExpand;
+            m_max.z += toExpand;
         }
-
-        const Range<float>& AxisRange(EAxis n) const
-        {
-            if (n == EAxis::Y) return m_y;
-            if (n == EAxis::Z) return m_z;
-            return m_x;
-        }
-
-        EAxis longestAxis() const
-        {
-            float xLength = m_x.Length();
-            float yLength = m_y.Length();
-            float zLength = m_z.Length();
-
-            if (xLength > yLength)
-                return xLength > zLength ? EAxis::X : EAxis::Z;
-            else
-                return yLength > zLength ? EAxis::Y : EAxis::Z;
-        }
-
-        [[nodiscard]] bool IsHit(const Ray& ray, Range<float> minMax) const;
-
-        [[nodiscard]] const Range<float>& GetXRange() const { return m_x; }
-        [[nodiscard]] const Range<float>& GetYRange() const { return m_y; }
-        [[nodiscard]] const Range<float>& GetZRange() const { return m_z; }
-
-        AABB operator+(const Vector3& offset) const
-        {
-            return AABB(m_x + offset.x, m_y + offset.y, m_z + offset.z);
-        }
-
-    private:
-        void PadToMinimums()
-        {
-            float delta = .0001f;
-
-            if (m_x.Length() < delta) Range<float>::Expand(m_x, delta);
-            if (m_y.Length() < delta) Range<float>::Expand(m_y, delta);
-            if (m_z.Length() < delta) Range<float>::Expand(m_z, delta);
-        }
-    };
+    }
+};
 }

@@ -14,7 +14,7 @@ BvhNode::BvhNode(World& world, size_t start, size_t end)
         m_boundingBox = AABB(m_boundingBox, objects[i]->BoundingBox());
     }
 
-    EAxis axis = m_boundingBox.longestAxis();
+    EAxis axis = m_boundingBox.LongestAxis();
 
     auto fCompare = (axis == EAxis::X) ? BoxXCompare : (axis == EAxis::Y) ? BoxYCompare : BoxZCompare;
 

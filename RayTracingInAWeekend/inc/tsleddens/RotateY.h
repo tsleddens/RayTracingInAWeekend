@@ -32,9 +32,9 @@ namespace tsleddens
                 const float fJ = static_cast<float>(j);
                 const float fK = static_cast<float>(k);
 
-                const float x = fI * m_boundingBox.GetXRange().GetMax() + (1.f - fI) * m_boundingBox.GetXRange().GetMin();
-                const float y = fJ * m_boundingBox.GetYRange().GetMax() + (1.f - fJ) * m_boundingBox.GetYRange().GetMin();
-                const float z = fK * m_boundingBox.GetZRange().GetMax() + (1.f - fK) * m_boundingBox.GetZRange().GetMin();
+                const float x = fI * m_boundingBox.Max().x + (1.f - fI) * m_boundingBox.Min().x;
+                const float y = fJ * m_boundingBox.Max().y + (1.f - fJ) * m_boundingBox.Min().y;
+                const float z = fK * m_boundingBox.Max().z + (1.f - fK) * m_boundingBox.Min().z;
 
                 const float newX = m_cosTheta * x + m_sinTheta * z;
                 const float newZ = -m_sinTheta * x + m_cosTheta * z;
