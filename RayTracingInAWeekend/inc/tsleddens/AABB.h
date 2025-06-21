@@ -14,12 +14,13 @@ public:
     AABB() = default;
 
     AABB( const AABB& a, const AABB& b )
-        : m_min( glm::min( a.m_min, b.m_min ) ),
-          m_max( glm::max( a.m_max, b.m_max ) ) {}
+    : m_min( glm::min( a.m_min, b.m_min ) )
+    , m_max( glm::max( a.m_max, b.m_max ) )
+    {}
 
     AABB( const Point3& a, const Point3& b )
-        : m_min( glm::min( a.x, b.x ), glm::min( a.y, b.y ), glm::min( a.z, b.z ) ),
-          m_max( glm::max( a.x, b.x ), glm::max( a.y, b.y ), glm::max( a.z, b.z ) )
+    : m_min( glm::min( a.x, b.x ), glm::min( a.y, b.y ), glm::min( a.z, b.z ) )
+    , m_max( glm::max( a.x, b.x ), glm::max( a.y, b.y ), glm::max( a.z, b.z ) )
     {
         PadToMinimums();
     }
@@ -87,4 +88,4 @@ private:
         }
     }
 };
-}
+}  // namespace tsleddens

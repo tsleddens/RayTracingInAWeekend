@@ -6,41 +6,55 @@
 
 namespace tsleddens
 {
-    class AppBase : public Win32Rasterizer
+class AppBase : public Win32Rasterizer
+{
+    Camera    m_camera;
+    World     m_world {};
+    BvhNode   m_bvh {};
+    ULONGLONG m_sampleCount = 0;
+
+    std::chrono::time_point<std::chrono::steady_clock> m_appStartTime;
+    std::chrono::time_point<std::chrono::steady_clock> m_currentSampleStartTime;
+
+protected:
+    AppBase( int width, int height, const wchar_t* title )
+    : Win32Rasterizer( width, height, title )
+    , m_camera( width, height )
+    , m_appStartTime( std::chrono::high_resolution_clock::now() )
+    , m_currentSampleStartTime( m_appStartTime )
+    {}
+    ~AppBase() override = default;
+
+    World* GetWorld()
     {
-        Camera m_camera;
-        World m_world{};
-        BvhNode m_bvh{};
-        ULONGLONG m_sampleCount = 0;
+        return &m_world;
+    }
+    Camera* GetCamera()
+    {
+        return &m_camera;
+    }
+    [[nodiscard]] virtual IRayTraceable* GetLights()
+    {
+        return nullptr;
+    }
 
-        std::chrono::time_point<std::chrono::steady_clock> m_appStartTime;
-        std::chrono::time_point<std::chrono::steady_clock> m_currentSampleStartTime;
+    virtual void InitWorld( World& world ) = 0;
 
-    protected:
-        AppBase(int width, int height, const wchar_t* title) :
-            Win32Rasterizer(width, height, title),
-            m_camera(width, height),
-            m_appStartTime(std::chrono::high_resolution_clock::now()),
-            m_currentSampleStartTime(m_appStartTime)
-        {
-        }
-        ~AppBase() override = default;
+    void OnInit() final;
+    void OnResize( UINT newWidth, UINT newHeight ) final;
+    void OnBeforeRender() final
+    {
+        m_camera.Render( m_bvh, *this, GetLights() );
+    }
+    void OnAfterRender() final
+    {
+        UpdateFps();
+    }
 
-        World* GetWorld() { return &m_world; }
-        Camera* GetCamera() { return &m_camera; }
-        [[nodiscard]] virtual IRayTraceable* GetLights() { return nullptr; }
+    void OnUpdate() override {}
+    void OnDestroy() override {}
 
-        virtual void InitWorld(World& world) = 0;
-
-        void OnInit() final;
-        void OnResize(UINT newWidth, UINT newHeight) final;
-        void OnBeforeRender() final { m_camera.Render(m_bvh, *this, GetLights()); }
-        void OnAfterRender() final { UpdateFps(); }
-
-        void OnUpdate() override {}
-        void OnDestroy() override {}
-
-    private:
-        void UpdateFps();
-    };
-}
+private:
+    void UpdateFps();
+};
+}  // namespace tsleddens

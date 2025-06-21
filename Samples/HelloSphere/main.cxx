@@ -10,24 +10,24 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "tsleddens/RtwImage.h"
 
-int CALLBACK wWinMain(HINSTANCE, HINSTANCE, PWSTR, int nCmdShow)
+int CALLBACK wWinMain( HINSTANCE, HINSTANCE, PWSTR, int nCmdShow )
 {
-    auto console = spdlog::stdout_color_mt("console");
+    auto console = spdlog::stdout_color_mt( "console" );
     // auto app = HelloSphere(1024 / 2, 768 / 2, L"Test");
     // auto app = BouncingSpheres(1024 / 2, 768 / 2, L"Test");
     // auto app = Earth(1024 / 2, 768 / 2, L"Test");
     // auto app = PerlinSpheres(1024 / 2, 768 / 2, L"Test");
     // auto app = Quads(1024 / 2, 768 / 2, L"Test");
     // auto app = SimpleLight(1024 / 2, 768 / 2, L"Test");
-    auto app = CornellBox(600, 600, L"Test");
+    auto app = CornellBox( 600, 600, L"Test" );
     // auto app = CornellSmoke(600, 600, L"Test");
     // auto app = FinalScene(600, 600, L"Test");
-    return app.Run(nCmdShow);
+    return app.Run( nCmdShow );
 }
 
-#if defined(_DEBUG)
+#if defined( _DEBUG )
 int main()
 {
-    return wWinMain(GetModuleHandle(NULL), NULL, GetCommandLineW(), SW_SHOWNORMAL);
+    return wWinMain( GetModuleHandle( NULL ), NULL, GetCommandLineW(), SW_SHOWNORMAL );
 }
 #endif

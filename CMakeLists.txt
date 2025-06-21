@@ -12,3 +12,19 @@ find_package(Stb CONFIG REQUIRED)
 
 add_subdirectory(RayTracingInAWeekend)
 add_subdirectory(Samples)
+
+find_program(CLANG_FORMAT_BIN clang-format)
+
+if(CLANG_FORMAT_BIN)
+    file(GLOB_RECURSE ALL_SOURCE_FILES
+         "*.h"
+         "*.cxx")
+
+    add_custom_target(format
+        COMMAND ${CLANG_FORMAT_BIN}
+                -i
+                --style=file
+                ${ALL_SOURCE_FILES}
+        COMMENT "Formatting all source files with clang-format"
+    )
+endif()

@@ -4,44 +4,58 @@
 
 namespace tsleddens
 {
-    class Sphere: public IRayTraceable
+class Sphere : public IRayTraceable
+{
+    AABB       m_boundingBox;
+    Point3     m_position;
+    IMaterial* m_pMaterial;
+    float      m_radius;
+    float      m_radius2;
+    bool       m_flipNormals;
+
+public:
+    Sphere( const Point3& position, float radius, IMaterial* pMaterial, bool flippedNormals = false );
+
+    [[nodiscard]] const Point3& GetPosition() const
     {
-        AABB m_boundingBox;
-        Point3 m_position;
-        IMaterial* m_pMaterial;
-        float m_radius;
-        float m_radius2;
-        bool m_flipNormals;
+        return m_position;
+    }
 
-    public:
-        Sphere(const Point3& position, float radius, IMaterial* pMaterial, bool flippedNormals = false);
+    [[nodiscard]] IMaterial* GetMaterial() const override
+    {
+        return m_pMaterial;
+    }
 
-        [[nodiscard]] const Point3& GetPosition() const { return m_position; }
+    [[nodiscard]] float GetRadius() const
+    {
+        return m_radius;
+    }
 
-        [[nodiscard]] IMaterial* GetMaterial() const override { return m_pMaterial; }
+    [[nodiscard]] bool Intersect( const Ray& ray, HitResult& hitResult, Range<float> range ) const override;
 
-        [[nodiscard]] float GetRadius() const { return m_radius; }
+    [[nodiscard]] bool HasFlippedNormals() const override
+    {
+        return m_flipNormals;
+    }
 
-        [[nodiscard]] bool Intersect(const Ray& ray, HitResult& hitResult, Range<float> range) const override;
+    [[nodiscard]] const AABB& BoundingBox() const override
+    {
+        return m_boundingBox;
+    }
 
-        [[nodiscard]] bool HasFlippedNormals() const override { return m_flipNormals; }
+    static void GetSphereUV( const Point3& p, float& u, float& v )
+    {
+        float theta = std::acos( -p.y );
+        float phi   = std::atan2( -p.z, p.x ) + glm::pi<float>();
 
-        [[nodiscard]] const AABB& BoundingBox() const override { return m_boundingBox; }
+        u = phi / ( 2.f * glm::pi<float>() );
+        v = theta / glm::pi<float>();
+    }
 
-        static void GetSphereUV(const Point3& p, float& u, float& v)
-        {
-            float theta = std::acos(-p.y);
-            float phi = std::atan2(-p.z, p.x) + glm::pi<float>();
+    [[nodiscard]] float   PdfValue( const Point3&, const Vector3& ) const override;
+    [[nodiscard]] Vector3 Random( const Point3& ) const override;
 
-            u = phi / (2.f * glm::pi<float>());
-            v = theta / glm::pi<float>();
-        }
-
-        [[nodiscard]] float PdfValue(const Point3&, const Vector3&) const override;
-        [[nodiscard]] Vector3 Random(const Point3&) const override;
-
-    private:
-
-        static Vector3 RandomToSphere(float radius2, float distance2);
-    };
-}
+private:
+    static Vector3 RandomToSphere( float radius2, float distance2 );
+};
+}  // namespace tsleddens
