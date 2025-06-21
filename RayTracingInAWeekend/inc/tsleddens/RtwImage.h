@@ -11,7 +11,7 @@ namespace tsleddens
 {
     class RtwImage
     {
-        const int s_bytesPerPixel = 3;
+        constexpr int s_bytesPerPixel = 3;
 
         float* m_fData = nullptr;
 
@@ -31,8 +31,7 @@ namespace tsleddens
 
         RtwImage(const char* pFilename)
         {
-            auto filename = GetAssetPath(std::string(pFilename));
-            if (!Load(filename))
+            if ( const auto filename = GetAssetPath(std::string(pFilename)); !Load(filename))
             {
                 std::cerr << "ERROR: Could not load image file '" << pFilename << "'.\n";
             }
@@ -42,9 +41,9 @@ namespace tsleddens
         {
             auto n = s_bytesPerPixel;
             auto utf8 = filename.u8string();
-            auto string = std::string(utf8.begin(), utf8.end());
+            const auto string = std::string(utf8.begin(), utf8.end());
             m_fData = stbi_loadf(string.c_str(), &m_width, &m_height, &n, s_bytesPerPixel);
-            bool result = m_fData != nullptr;
+            const bool result = m_fData != nullptr;
             if (result)
             {
                 m_bytesPerScanline = m_width * s_bytesPerPixel;
@@ -53,10 +52,10 @@ namespace tsleddens
             return result;
         }
 
-        int Width() const { return m_fData == nullptr ? 0 : m_width; }
-        int Height() const { return m_fData == nullptr ? 0 : m_height; }
+        [[nodiscard]] int Width() const { return m_fData == nullptr ? 0 : m_width; }
+        [[nodiscard]] int Height() const { return m_fData == nullptr ? 0 : m_height; }
 
-        const unsigned char* PixelData(int x, int y) const
+        [[nodiscard]] const unsigned char* PixelData(int x, int y) const
         {
             static unsigned char magenta[] = { 255, 0,255 };
             if (m_bData == nullptr) return magenta;
@@ -89,7 +88,7 @@ namespace tsleddens
 
         void ConvertToBytes()
         {
-            int totalBytes = m_width * m_height * s_bytesPerPixel;
+            const int totalBytes = m_width * m_height * s_bytesPerPixel;
             m_bData = new unsigned char[totalBytes];
 
             auto* pB = m_bData;
