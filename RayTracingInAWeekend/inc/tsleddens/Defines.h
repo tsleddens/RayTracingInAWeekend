@@ -3,11 +3,14 @@
 #define GLM_FORCE_INLINE
 #define GLM_FORCE_SIMD_AVX2
 #define GLM_FORCE_ALIGNED
+#define GLM_ENABLE_EXPERIMENTAL
 
+#include <algorithm>
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <glm/ext/scalar_constants.hpp>
 
 using Vector3   = glm::vec3;
 using Point3    = glm::vec3;
