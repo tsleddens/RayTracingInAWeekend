@@ -28,6 +28,7 @@ int CALLBACK wWinMain( HINSTANCE, HINSTANCE, PWSTR, int nCmdShow )
 #if defined( _DEBUG )
 int main()
 {
+    spdlog::set_level( spdlog::level::err );
     return wWinMain( GetModuleHandle( NULL ), NULL, GetCommandLineW(), SW_SHOWNORMAL );
 }
 #endif

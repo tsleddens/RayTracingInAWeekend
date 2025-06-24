@@ -1,26 +1,21 @@
 #pragma once
-
-#include "BufferedGdiBitmap.h"
-#include "Defines.h"
+#include "Aligned2DArray.h"
 #include "IRasterizer.h"
-
-#include <mutex>
+#include <SDL3/SDL.h>
 
 namespace tsleddens
 {
-constexpr int s_BitCount = 32;  // don't change
-
-class Win32Rasterizer : public IRasterizer
+class SDLRasterizer : public IRasterizer
 {
+    SDL_Window*   m_pWindow;
+    SDL_Renderer* m_pRenderer;
+    SDL_Texture*  m_pTexture;
+
     UINT m_width;
     UINT m_height;
 
-    float m_aspectRatio;
-
-    HWND m_hwnd;
-
-    Aligned2DArray<Color> m_colorAccumulator;
-    BufferedGdiBitmap     m_bufferedGdiBitmap;
+    Aligned2DArray<Color>     m_colorAccumulator;
+    Aligned2DArray<ColorCode> m_frameBuffer;
 
     std::mutex  m_renderLock;
     std::thread m_renderThread;
@@ -29,18 +24,18 @@ class Win32Rasterizer : public IRasterizer
     std::atomic<bool> m_isResizing { false };
 
 public:
-    ~Win32Rasterizer() override;
-
     int Run( int cmdShow ) override;
 
     void PlotPixel( const UINT x, const UINT y, const Color& color, const float reciprocalFrameCount ) override
     {
         m_colorAccumulator[y][x] += ( color - m_colorAccumulator[y][x] ) * reciprocalFrameCount;
-        m_bufferedGdiBitmap.SetPixel( x, y, m_colorAccumulator[y][x] );
+        m_frameBuffer[y][x] = ColorToColorCodeSdl( m_colorAccumulator[y][x] );
     }
 
+    ~SDLRasterizer() override;
+
 protected:
-    Win32Rasterizer( UINT width, UINT height, const wchar_t* title );
+    SDLRasterizer( UINT width, UINT height, const wchar_t* title );
 
     void OnInit() override                                  = 0;
     void OnResize( UINT newWidth, UINT newHeight ) override = 0;
@@ -63,33 +58,16 @@ protected:
 
     [[nodiscard]] UINT GetPixelCount() const override
     {
-        return m_height * m_width;
+        return m_width * m_height;
     }
 
     [[nodiscard]] float GetAspectRatio() const override
     {
-        return m_aspectRatio;
+        return static_cast<float>( m_width ) / static_cast<float>( m_height );
     }
 
 private:
-    void Render();
-
-    static LRESULT CALLBACK StaticWindowProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
-    LRESULT CALLBACK        WindowProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
-    HWND                    CreateWindowHandle( const wchar_t* title );
-    WNDCLASSEX              RegisterWindowClass( WNDPROC messageHandlerCallback ) const;
-    int                     StartMessageLoop();
-
-    [[nodiscard]] RECT GetClientSurface() const;
-
-    [[nodiscard]] HWND GetWindowHandle() const
-    {
-        return m_hwnd;
-    }
-
-    [[nodiscard]] HINSTANCE GetInstanceHandle() const
-    {
-        return GetModuleHandle( nullptr );
-    }
+    int  StartMessageLoop();
+    void Render() const;
 };
 }  // namespace tsleddens

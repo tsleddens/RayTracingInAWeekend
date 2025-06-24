@@ -10,13 +10,13 @@
 
 using namespace tsleddens;
 
-Camera::Camera( UINT imageWidth, UINT imageHeight )
+Camera::Camera( const UINT imageWidth, const UINT imageHeight )
 : m_deFocusDisk( DeFocusDisk() )
 {
     Resize( imageWidth, imageHeight );
 }
 
-void Camera::Resize( UINT imageWidth, UINT imageHeight )
+void Camera::Resize( const UINT imageWidth, const UINT imageHeight )
 {
     m_frameCount  = 1;
     m_imageWidth  = imageWidth;
@@ -42,9 +42,9 @@ void Camera::Resize( UINT imageWidth, UINT imageHeight )
     m_p0 = m_position - ( m_deFocusDisk.GetDistance() * w ) - horizontal / 2.f - vertical / 2.f;
 }
 
-void Camera::Render( const IRayTraceable& world, Win32Rasterizer& rasterizer, IRayTraceable* lights )
+void Camera::Render( const IRayTraceable& world, IRasterizer& rasterizer, IRayTraceable* lights )
 {
-    float reciprocalFrameCount = 1.f / static_cast<float>( m_frameCount );
+    const float reciprocalFrameCount = 1.f / static_cast<float>( m_frameCount );
     for ( UINT y = 0; y < m_imageHeight; ++y )
     {
         for ( UINT x = 0; x < m_imageWidth; ++x )
@@ -78,8 +78,7 @@ Color Camera::SampleColor( const Ray& ray, const IRayTraceable& world, UINT curr
     }
 
     Range<float> range( 0.001f, FLT_MAX );
-    HitResult    hitResult;
-    if ( world.Intersect( ray, hitResult, range ) )
+    if ( HitResult hitResult; world.Intersect( ray, hitResult, range ) )
     {
         if ( m_isRenderNormalsEnabled )
         {

@@ -46,10 +46,10 @@ public:
     static void GetSphereUV( const Point3& p, float& u, float& v )
     {
         float theta = std::acos( -p.y );
-        float phi   = std::atan2( -p.z, p.x ) + glm::pi<float>();
+        float phi   = std::atan2( -p.z, p.x ) + PI;
 
-        u = phi / ( 2.f * glm::pi<float>() );
-        v = theta / glm::pi<float>();
+        u = phi / ( 2.f * PI );
+        v = theta / PI;
     }
 
     [[nodiscard]] float   PdfValue( const Point3&, const Vector3& ) const override;

@@ -1,10 +1,10 @@
 #pragma once
 #include "DeFocusDisk.h"
 #include "Defines.h"
+#include "IRasterizer.h"
 
 namespace tsleddens
 {
-class Win32Rasterizer;
 class Ray;
 class DeFocusDisk;
 struct IRayTraceable;
@@ -97,7 +97,7 @@ public:
         m_samplesPerPixel = value < 1 ? 1 : value;
     }
 
-    void Render( const IRayTraceable& world, Win32Rasterizer& rasterizer, IRayTraceable* lights );
+    void Render( const IRayTraceable& world, IRasterizer& rasterizer, IRayTraceable* lights );
     void EnableRenderNormals()
     {
         m_isRenderNormalsEnabled = true;

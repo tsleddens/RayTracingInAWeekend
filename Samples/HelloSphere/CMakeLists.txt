@@ -37,14 +37,17 @@ set_target_properties(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-        RayTracingInAWeekend
     PRIVATE
+        RayTracingInAWeekend
         glm::glm
+        SDL3::SDL3
 )
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${ASSETS_DIR}"
-    "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+        "${ASSETS_DIR}"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:SDL3::SDL3>
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )

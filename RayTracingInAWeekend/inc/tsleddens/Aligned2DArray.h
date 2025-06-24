@@ -62,7 +62,13 @@ public:
     {
         return m_pData;
     }
-    const T* Raw() const
+
+    const T* operator&() const
+    {
+        return m_pData;
+    }
+
+    [[nodiscard]] const T* Raw() const
     {
         return m_pData;
     }

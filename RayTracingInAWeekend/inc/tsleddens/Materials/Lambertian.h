@@ -50,7 +50,7 @@ public:
     [[nodiscard]] float ScatteringPdf( const Ray& ray, const HitResult& hitResult, const Ray& scattered ) const override
     {
         const float cosTheta = glm::dot( hitResult.GetNormal(), glm::normalize( scattered.GetDirection() ) );
-        return cosTheta < 0.f ? 0.f : cosTheta / glm::pi<float>();
+        return cosTheta < 0.f ? 0.f : cosTheta / PI;
     }
 };
 }  // namespace tsleddens

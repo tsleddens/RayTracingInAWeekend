@@ -40,7 +40,7 @@ public:
 
     [[nodiscard]] float ScatteringPdf( const Ray&, const HitResult&, const Ray& ) const override
     {
-        return 1.f / ( 4.f * glm::pi<float>() );
+        return 1.f / ( 4.f * PI );
     }
 };
 }  // namespace tsleddens

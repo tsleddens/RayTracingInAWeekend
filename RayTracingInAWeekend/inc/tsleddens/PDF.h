@@ -60,7 +60,7 @@ class SpherePDF : public PDF
 public:
     [[nodiscard]] float Value( const Vector3& ) const override
     {
-        return 1.f / ( 4.f * glm::pi<float>() );
+        return 1.f / ( 4.f * PI );
     }
 
     [[nodiscard]] Vector3 Generate() const override
@@ -81,7 +81,7 @@ public:
     [[nodiscard]] float Value( const Vector3& direction ) const override
     {
         float cosTheta = glm::dot( glm::normalize( direction ), m_uvw.W() );
-        return std::fmax( 0.f, cosTheta / glm::pi<float>() );
+        return std::fmax( 0.f, cosTheta / PI );
     }
 
     [[nodiscard]] Vector3 Generate() const override
