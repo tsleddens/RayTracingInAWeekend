@@ -33,13 +33,10 @@ void Camera::Resize( const UINT imageWidth, const UINT imageHeight )
     const Vector3 v = glm::cross( w, u );
     m_deFocusDisk.GenerateDisk( u, v );
 
-    const Vector3 horizontal = viewportWidth * u;
-    const Vector3 vertical   = viewportHeight * -v;
+    m_uDelta = viewportWidth * u;
+    m_vDelta = viewportHeight * -v;
 
-    m_uDelta = horizontal / static_cast<float>( imageWidth );
-    m_vDelta = vertical / static_cast<float>( imageHeight );
-
-    m_p0 = m_position - ( m_deFocusDisk.GetDistance() * w ) - horizontal / 2.f - vertical / 2.f;
+    m_p0 = m_position - ( m_deFocusDisk.GetDistance() * w ) - m_uDelta / 2.f - m_vDelta / 2.f;
 }
 
 void Camera::Render( const IRayTraceable& world, IRasterizer& rasterizer, IRayTraceable* lights )
@@ -59,9 +56,10 @@ void Camera::Render( const IRayTraceable& world, IRasterizer& rasterizer, IRayTr
 
 Ray Camera::GetRay( const UINT x, const UINT y ) const
 {
-    const Vector3 randomOffset = GenerateRandomOffset();
-    const Point3  focusPoint   = m_p0 + ( ( static_cast<float>( x ) + randomOffset.x ) * m_uDelta ) +
-                              ( ( static_cast<float>( y ) + randomOffset.y ) * m_vDelta );
+    const float u = ( static_cast<float>( x ) + Halton( m_frameCount, 2 ) ) / static_cast<float>( m_imageWidth );
+    const float v = ( static_cast<float>( y ) + Halton( m_frameCount, 3 ) ) / static_cast<float>( m_imageHeight );
+
+    const Point3 focusPoint = m_p0 + u * m_uDelta + v * m_vDelta;
 
     const Point3  rayOrigin = m_deFocusDisk.GetPosition( m_position );
     const Vector3 direction = focusPoint - rayOrigin;
@@ -89,7 +87,7 @@ Color Camera::SampleColor( const Ray& ray, const IRayTraceable& world, UINT curr
         Color         emissionColor =
             hitResult.GetMaterial()->Emitted( ray, hitResult, hitResult.u, hitResult.v, hitResult.GetIntersection() );
 
-        if ( !hitResult.GetMaterial()->Scatter( ray, hitResult, scatterResult ) )
+        if ( !hitResult.GetMaterial()->Scatter( ray, hitResult, scatterResult, m_frameCount) )
         {
             return emissionColor;
         }

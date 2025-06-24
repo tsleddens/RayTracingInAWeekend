@@ -68,7 +68,7 @@ inline float RandomFloat( float min, float max )
     return min + ( max - min ) * RandomFloat();
 }
 
-inline float Halton( int index, int base )
+inline float Halton( UINT index, const UINT base )
 {
     float result = 0.f;
     float f      = 1.f / base;
@@ -130,6 +130,21 @@ inline Vector3 RandomCosineDirection()
     const float z   = std::sqrt( 1 - r2 );
 
     return Vector3( x, y, z );
+}
+
+inline Vector3 RandomCosineDirectionHalton(const UINT baseIndex)
+{
+    const float u1 = Halton( baseIndex, 2 );
+    const float u2 = Halton( baseIndex, 3 );
+
+    const float r     = std::sqrt( u1 );
+    const float theta = 2.0f * PI * u2;
+
+    return {
+        r * std::cos( theta ),
+        r * std::sin( theta ),
+        std::sqrt( 1.0f - u1 )
+    };
 }
 
 inline std::string WideToUtf8( const wchar_t* wideStr )

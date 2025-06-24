@@ -29,8 +29,8 @@ public:
 
     ~Isotropic() override = default;
 
-    [[nodiscard]] bool Scatter( const Ray& ray, const HitResult& hitResult,
-                                ScatterResult& scatterResult ) const override
+    [[nodiscard]] bool Scatter( const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult,
+                                const UINT baseIndex ) const override
     {
         scatterResult.Attenuation = m_texture->Value( hitResult.u, hitResult.v, hitResult.GetIntersection() );
         scatterResult.pPdf        = std::make_shared<SpherePDF>();

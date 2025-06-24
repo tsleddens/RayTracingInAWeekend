@@ -31,12 +31,11 @@ public:
     : Lambertian( std::make_shared<ColorTexture>( Color( rgb ) ) )
     {}
 
-    [[nodiscard]] bool Scatter( const Ray& ray, const HitResult& hitResult,
-                                ScatterResult& scatterResult ) const override
+    [[nodiscard]] bool Scatter( const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult, const UINT baseIndex) const override
     {
         const ONB uvw( hitResult.GetNormal() );
 
-        if ( Vector3 scatterDirection = uvw.Transform( RandomCosineDirection() ); IsNearZero( scatterDirection ) )
+        if ( Vector3 scatterDirection = uvw.Transform( RandomCosineDirectionHalton( baseIndex ) ); IsNearZero( scatterDirection ) )
         {
             scatterDirection = hitResult.GetNormal();
         }

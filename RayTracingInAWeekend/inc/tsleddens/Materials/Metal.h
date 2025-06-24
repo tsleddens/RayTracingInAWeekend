@@ -16,8 +16,19 @@ public:
     , m_fuzz( fuzz < 1.0f ? fuzz : 1.0f )
     {}
 
-    [[nodiscard]] bool  Scatter( const Ray& ray, const HitResult& hitResult,
-                                 ScatterResult& scatterResult ) const override;
+    [[nodiscard]] bool Scatter( const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult,
+                                const UINT baseIndex ) const override
+    {
+        const Vector3 reflected        = glm::reflect( ray.GetDirection(), hitResult.GetNormal() );
+        const Vector3 scatterDirection = reflected + ( m_fuzz * RandomUnitVector3() );
+
+        scatterResult.Attenuation = m_albedo;
+        scatterResult.pPdf        = nullptr;
+        scatterResult.SkipPdf     = true;
+        scatterResult.SkipPdfRay  = Ray( hitResult.GetIntersection(), scatterDirection );
+        return true;
+    }
+
     [[nodiscard]] float GetFuzz() const
     {
         return m_fuzz;
@@ -29,15 +40,3 @@ public:
     }
 };
 }  // namespace tsleddens
-
-inline bool tsleddens::Metal::Scatter( const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult ) const
-{
-    const Vector3 reflected        = glm::reflect( ray.GetDirection(), hitResult.GetNormal() );
-    const Vector3 scatterDirection = reflected + ( m_fuzz * RandomUnitVector3() );
-
-    scatterResult.Attenuation = m_albedo;
-    scatterResult.pPdf        = nullptr;
-    scatterResult.SkipPdf     = true;
-    scatterResult.SkipPdfRay  = Ray( hitResult.GetIntersection(), scatterDirection );
-    return true;
-}

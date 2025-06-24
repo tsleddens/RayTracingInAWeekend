@@ -10,7 +10,7 @@ struct IMaterial
 {
     virtual ~IMaterial() = default;
 
-    [[nodiscard]] virtual bool Scatter( const Ray&, const HitResult&, ScatterResult& ) const
+    [[nodiscard]] virtual bool Scatter( const Ray&, const HitResult&, ScatterResult&, const UINT ) const
     {
         return false;
     }

@@ -24,14 +24,15 @@ public:
         m_refractionIndex = refractionIndex;
     }
 
-    [[nodiscard]] bool Scatter( const Ray& ray, const HitResult& hitResult,
-                                ScatterResult& scatterResult ) const override;
+    [[nodiscard]] bool Scatter( const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult,
+                                const UINT baseIndex ) const override;
 
 private:
     static float Reflectance( float cosine, float refractionIndex );
 };
 
-inline bool Dielectric::Scatter( const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult ) const
+inline bool Dielectric::Scatter( const Ray& ray, const HitResult& hitResult, ScatterResult& scatterResult,
+                                 const UINT baseIndex ) const
 {
     scatterResult.Attenuation = Color( 1.f );  // Dielectric materials do not absorb light
     scatterResult.pPdf        = nullptr;
