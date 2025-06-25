@@ -12,7 +12,7 @@ class Aligned2DArray
     T*   m_pData;
 
 public:
-    Aligned2DArray( UINT cols, UINT rows )
+    Aligned2DArray( const UINT cols, const UINT rows )
     : m_rows( rows )
     , m_cols( cols )
     , m_ppRows( nullptr )
@@ -63,17 +63,12 @@ public:
         return m_pData;
     }
 
-    const T* operator&() const
-    {
-        return m_pData;
-    }
-
     [[nodiscard]] const T* Raw() const
     {
         return m_pData;
     }
 
-    void Resize( UINT cols, UINT rows )
+    void Resize( const UINT cols, const UINT rows )
     {
         if ( rows == m_rows && cols == m_cols )
         {
@@ -104,7 +99,7 @@ public:
     }
 
 private:
-    void Allocate( UINT rows, UINT cols )
+    void Allocate( const UINT rows, const UINT cols )
     {
         m_rows = rows;
         m_cols = cols;

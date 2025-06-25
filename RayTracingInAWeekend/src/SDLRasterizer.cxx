@@ -57,7 +57,7 @@ int SDLRasterizer::StartMessageLoop()
 
 void SDLRasterizer::Render() const
 {
-    SDL_UpdateTexture( m_pTexture, nullptr, &m_frameBuffer, m_width * sizeof( ColorCode ) );
+    SDL_UpdateTexture( m_pTexture, nullptr, m_frameBuffer.Raw(), m_width * sizeof( ColorCode ) );
     SDL_RenderTexture( m_pRenderer, m_pTexture, NULL, NULL );
     SDL_RenderPresent( m_pRenderer );
 }
